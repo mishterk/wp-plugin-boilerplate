@@ -22,7 +22,7 @@ class Plugin {
 
 		// todo - move the script loader
 		add_action( 'wp_enqueue_scripts', function () {
-			wp_enqueue_script( 'pdkpluginbp', PDK_PLUGIN_BOILERPLATE_PLUGIN_URL . 'assets/build/js/app.js', [ 'jquery' ], PDK_PLUGIN_BOILERPLATE_PLUGIN_VERSION, true );
+			wp_enqueue_script( 'pdk-plugin-boilerplate', PDK_PLUGIN_BOILERPLATE_PLUGIN_URL . 'assets/build/js/app.js', [ 'jquery' ], PDK_PLUGIN_BOILERPLATE_PLUGIN_VERSION, true );
 		} );
 	}
 
