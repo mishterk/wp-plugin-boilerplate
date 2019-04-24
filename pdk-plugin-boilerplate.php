@@ -1,15 +1,18 @@
 <?php
 /**
- * Plugin Name: PDK Plugin Boilerplate
- * Plugin URI:  http://philkurth.com.au
- * Description: A boilerplate for plugin development
- * Version:     0.1
- * Author:      Phil Kurth
- * Author URI:  http://philkurth.com.au
- * License:     GPL2
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Domain Path: /languages
- * Text Domain: pdk-plugin-boilerplate
+ * Plugin Name:         PDK Plugin Boilerplate
+ * Plugin URI:          http://philkurth.com.au
+ * Description:         A boilerplate for plugin development
+ * Version:             0.1
+ * Author:              Phil Kurth
+ * Author URI:          http://philkurth.com.au
+ * GitHub Plugin URI:   https://github.com/mishterk/wp-plugin-boilerplate
+ * Requires at least:   5.1
+ * Tested up to:        5.1
+ * License:             GPL2
+ * License URI:         https://www.gnu.org/licenses/gpl-2.0.html
+ * Domain Path:         /languages
+ * Text Domain:         pdk-plugin-boilerplate
  */
 
 
