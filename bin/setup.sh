@@ -7,3 +7,5 @@ PdkPluginBoilerplate > SomeName
 pdk-plugin-boilerplate.php > some-name.php
 pdk-plugin-boilerplate > some-name
 PDK_PLUGIN_BOILERPLATE > SOME_NAME
+
+# TODO: maybe prompt for other plugin header data and replace that, too
