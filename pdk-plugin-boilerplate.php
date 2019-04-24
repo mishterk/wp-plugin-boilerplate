@@ -15,7 +15,6 @@
  * Text Domain:         pdk-plugin-boilerplate
  */
 
-
 // If this file is called directly, abort.
 defined( 'WPINC' ) or die();
 
