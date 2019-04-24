@@ -1,0 +1,5 @@
+theme: jekyll-theme-cayman
+title: PDK Plugin Boilerplate
+description: A plugin boilerplate
+show_downloads: true
+google_analytics: UA-XXXXXXXX-X
