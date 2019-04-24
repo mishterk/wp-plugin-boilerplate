@@ -16,9 +16,9 @@ TODO: Add a detailed description here
 
 == Installation ==
 
-1. Download `pdkpluginbp.zip`
+1. Download `pdk-plugin-boilerplate.zip`
 1. Unzip
-1. Upload `pdkpluginbp` directory to your `/wp-content/plugins` directory
+1. Upload `pdk-plugin-boilerplate` directory to your `/wp-content/plugins` directory
 1. Go to the plugin management page and enable the plugin
 
 You can find full details of installing a plugin on the [plugin installation page](https://redirection.me/support/installation/).
