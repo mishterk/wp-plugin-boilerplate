@@ -22,7 +22,7 @@ class AdminNotice {
 
 	protected $type = self::TYPE_INFO;
 	protected $message = '';
-	protected $is_dismissible = true;
+	protected $is_dismissible = false;
 	protected $is_alt = false;
 	protected $allow_html = false;
 
