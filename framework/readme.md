@@ -47,3 +47,125 @@ View::echo('dir/post', ['var' => 'data', 'var2' => 'data2']);
 $markup = View::get('dir/post', ['var' => 'data', 'var2' => 'data2']);
 
 ```
+
+## Admin Notices
+
+There are five classes within the framework that can be instantiated and used directly or extended for further 
+customisation: 
+
+1. `\PdkPluginBoilerplate\Framework\AdminNotices\AdminNotice`
+1. `\PdkPluginBoilerplate\Framework\AdminNotices\AdminSuccessNotice`
+1. `\PdkPluginBoilerplate\Framework\AdminNotices\AdminWarningNotice`
+1. `\PdkPluginBoilerplate\Framework\AdminNotices\AdminErrorNotice`
+1. `\PdkPluginBoilerplate\Framework\AdminNotices\AdminInfoNotice`
+
+### Direct use example
+
+You can simply instantiate the base class and configure as necessary to be any type of error notice. e.g;
+
+```php
+<?php
+
+// The absolute minimum required
+$notice = new \PdkPluginBoilerplate\Framework\AdminNotices\AdminNotice();
+$notice->set_message( 'This is a message' );
+$notice->init();
+
+// Optional extras
+$notice->set_is_dismissible( true ); // FALSE by default
+$notice->set_is_alt( false ); // sets 'alt' style as built into WordPress core
+
+// Use these to control the type of notice. The default is 'info'
+$notice->set_success_type();
+$notice->set_error_type();
+$notice->set_warning_type();
+$notice->set_info_type();
+```
+
+If you wish, you can use any of the remaining four classes to control the type for you. e.g;
+
+```php
+<?php
+
+$error = new \PdkPluginBoilerplate\Framework\AdminNotices\AdminErrorNotice();
+$warning = new \PdkPluginBoilerplate\Framework\AdminNotices\AdminWarningNotice();
+$info = new \PdkPluginBoilerplate\Framework\AdminNotices\AdminInfoNotice();
+$success = new \PdkPluginBoilerplate\Framework\AdminNotices\AdminSuccessNotice();
+```
+
+### Extending classes for additional control
+
+If you need further control over your admin notices, you can extend any one of the five base classes in your 
+application. By doing so, you can extend any of the methods or properties to customise as necessary. The possibilities 
+available to you include but are not limited to:
+
+1. The ability to implement the `is_visible()` method to conditionally control whether a notice will appear
+1. The ability to add your own CSS classes to a notice
+1. The ability to disable or customize sanitization on the notice's message
+
+#### A very basic example
+
+```php
+<?php 
+
+class MyErrorNotice extends \PdkPluginBoilerplate\Framework\AdminNotices\AdminErrorNotice {
+
+	protected $message = 'This is a my error message.';
+
+}
+
+$notice = new MyErrorNotice();
+$notice->init();
+```
+
+#### Implement a display condition
+
+```php
+<?php
+
+class MyConditionalErrorNotice extends \PdkPluginBoilerplate\Framework\AdminNotices\AdminErrorNotice {
+
+	protected $message = 'This is my error message.';
+
+    // this method is passed the results of get_current_screen() which can be either a WP_Screen object or NULL
+	protected function is_visible( $current_screen ) {
+		if(current_user_can('manage_options')){
+			return $current_screen and $current_screen->id === 'plugins'; 
+		}
+		return false;
+	}
+
+}
+
+$class = new MyConditionalErrorNotice();
+$class->init();
+```
+
+#### Add custom CSS classes to the notice
+
+```php
+<?php
+
+class MyCustomErrorNotice extends \PdkPluginBoilerplate\Framework\AdminNotices\AdminErrorNotice {
+
+	protected $message = 'This is my error message.';
+
+    protected function get_additional_classes( $as_array = false ) {
+    	
+        // fetch base classes as array
+    	$classes = parent::get_additional_classes(true);
+    	
+    	// add custom classes
+    	$classes[] = 'some-class';
+    	$classes[] = 'some-other-class';
+    
+        return $as_array
+            ? $classes
+            : implode( ' ', $classes );
+    	}
+
+}
+
+$class = new MyCustomErrorNotice();
+$class->init();
+```
