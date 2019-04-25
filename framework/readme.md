@@ -31,7 +31,7 @@ class View extends \PdkPluginBoilerplate\Framework\View\ViewBase {
         $this->set_overridable_template_dirs( [ 'dir', 'some/dir' ] );
         $this->add_overridable_template_dir( 'dir' );
         $this->add_overridable_template_dir( 'some/dir' );
-
+        
         // AND/OR, mark specific templates as overridable
         $this->set_overridable_templates( [ 'dir/post', 'some/dir/title' ] );
         $this->add_overridable_template( 'dir/post' );
@@ -73,7 +73,7 @@ $notice->init();
 
 // Optional extras
 $notice->set_is_dismissible( true ); // FALSE by default
-$notice->set_is_alt( false ); // sets 'alt' style as built into WordPress core
+$notice->set_is_alt( true ); // sets 'alt' style as built into WordPress core
 
 // Use these to control the type of notice. The default is 'info'
 $notice->set_success_type();
@@ -109,8 +109,8 @@ available to you include but are not limited to:
 <?php 
 
 class MyErrorNotice extends \PdkPluginBoilerplate\Framework\AdminNotices\AdminErrorNotice {
-
-	protected $message = 'This is a my error message.';
+	
+    protected $message = 'This is a my error message.';
 
 }
 
@@ -147,22 +147,22 @@ $class->init();
 <?php
 
 class MyCustomErrorNotice extends \PdkPluginBoilerplate\Framework\AdminNotices\AdminErrorNotice {
-
+    
 	protected $message = 'This is my error message.';
 
-    protected function get_additional_classes( $as_array = false ) {
+	protected function get_additional_classes( $as_array = false ) {
     	
         // fetch base classes as array
-    	$classes = parent::get_additional_classes(true);
-    	
-    	// add custom classes
-    	$classes[] = 'some-class';
-    	$classes[] = 'some-other-class';
-    
+        $classes = parent::get_additional_classes(true);
+        
+        // add custom classes
+        $classes[] = 'some-class';
+        $classes[] = 'some-other-class';
+        
         return $as_array
             ? $classes
             : implode( ' ', $classes );
-    	}
+        }
 
 }
 
