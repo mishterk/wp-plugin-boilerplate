@@ -31,6 +31,7 @@ if ( version_compare( PHP_VERSION, PDK_PLUGIN_BOILERPLATE_MIN_PHP_VERSION, '>=' 
 	$plugin->init();
 
 } else {
+	require_once PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . 'framework/AdminNotices/AdminNotice.php';
 	require_once PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . 'app/AdminNotices/FailedPhpVersionNotice.php';
 	$notice = new \PdkPluginBoilerplate\AdminNotices\FailedPhpVersionNotice( PDK_PLUGIN_BOILERPLATE_PLUGIN_NAME, PDK_PLUGIN_BOILERPLATE_MIN_PHP_VERSION );
 	$notice->init();

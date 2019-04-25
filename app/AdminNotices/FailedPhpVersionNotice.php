@@ -4,11 +4,10 @@
 namespace PdkPluginBoilerplate\AdminNotices;
 
 
-class FailedPhpVersionNotice {
+use PdkPluginBoilerplate\Framework\AdminNotices\AdminNotice;
 
 
-	private $plugin_name;
-	private $min_php_version;
+class FailedPhpVersionNotice extends AdminNotice {
 
 
 	/**
@@ -16,19 +15,8 @@ class FailedPhpVersionNotice {
 	 * @param $min_php_version
 	 */
 	public function __construct( $plugin_name, $min_php_version ) {
-		$this->plugin_name     = $plugin_name;
-		$this->min_php_version = $min_php_version;
-	}
-
-
-	public function init() {
-		add_action( 'admin_notices', [ $this, 'print_notice' ] );
-	}
-
-
-	public function print_notice() {
-		$message = __( "The <em>{$this->plugin_name}</em> plugin requires PHP version {$this->min_php_version} or higher. The plugin is active but is not currently functioning.", PDK_PLUGIN_BOILERPLATE_PLUGIN_TEXT_DOMAIN );
-		printf( '<div class="error">%s</div>', wpautop( $message ) );
+		$this->set_error_type();
+		$this->message = "The <em>{$plugin_name}</em> plugin requires PHP version {$min_php_version} or higher. The plugin is technically active but is not currently functioning.";
 	}
 
 
