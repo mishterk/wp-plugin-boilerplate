@@ -5,20 +5,30 @@ namespace PdkPluginBoilerplate\Framework\Ajax;
 
 
 use PdkPluginBoilerplate\Framework\Traits\ClassNameAsIdentifier;
+use PdkPluginBoilerplate\Framework\Traits\NonceCreationAndVerification;
 
 
-// todo - add nonce handling – perhaps as a Trait?
 // todo - add inline script variable generation as an option
 abstract class AjaxBase {
 
 
 	use ClassNameAsIdentifier;
 
+	use NonceCreationAndVerification {
+		verify_nonce as protected _verify_nonce;
+	}
+
 
 	/**
 	 * @var string The AJAX action name
 	 */
 	protected $action;
+
+
+	/**
+	 * @var bool  Whether or not to look for and verify a nonce when handling requests.
+	 */
+	protected $use_nonce = true;
 
 
 	/**
@@ -57,6 +67,22 @@ abstract class AjaxBase {
 
 
 	/**
+	 * The full URL for this AJAX action. If nonces are being used, the nonce is also added to the URL.
+	 *
+	 * @return string
+	 */
+	public function get_url() {
+		$url = add_query_arg( 'action', $this->get_action(), admin_url( 'admin-ajax.php' ) );
+
+		if ( $this->use_nonce ) {
+			$url = $this->add_nonce_to_url( $url );
+		}
+
+		return $url;
+	}
+
+
+	/**
 	 * If no $action property is set on a child class, use the fully-qualified class name to generate a snake-cased
 	 * action for the implementation.
 	 *
@@ -75,19 +101,9 @@ abstract class AjaxBase {
 	 * The hooked handler method.
 	 */
 	public function _handle() {
-		$handler = null;
-		$action  = $this->get_action();
+		$this->verify_nonce();
 
-		// todo - handle nonce authentication here
-
-		if ( doing_action( "wp_ajax_{$action}" ) ) {
-			$handler = $this->priv_handler_method_name;
-
-		} elseif ( doing_action( "wp_ajax_nopriv_{$action}" ) ) {
-			$handler = $this->nopriv_handler_method_name;
-		}
-
-		if ( $handler ) {
+		if ( $handler = $this->get_handler_method_name() ) {
 			$this->$handler();
 			die();
 		}
@@ -96,11 +112,39 @@ abstract class AjaxBase {
 	}
 
 
+	protected function verify_nonce() {
+		if ( $this->use_nonce and ! $this->_verify_nonce() ) {
+			wp_die( 'Nonce invalid' );
+		}
+	}
+
+
+	/**
+	 * Determines which handler method should be invoked for this request.
+	 *
+	 * @return string|null The method name on success or NULL on failure
+	 */
+	protected function get_handler_method_name() {
+		$action = $this->get_action();
+
+		if ( doing_action( "wp_ajax_{$action}" ) ) {
+			return $this->priv_handler_method_name;
+
+		} elseif ( doing_action( "wp_ajax_nopriv_{$action}" ) ) {
+			return $this->nopriv_handler_method_name;
+		}
+
+		return null;
+	}
+
+
+	// todo - determine best name
 	protected function priv() {
 		wp_die( 'No endpoint handler defined for this action and context.', '', [ 'response' => 400 ] );
 	}
 
 
+	// todo - determine best name
 	protected function nopriv() {
 		wp_die( 'No endpoint handler defined for this action and context.', '', [ 'response' => 400 ] );
 	}
