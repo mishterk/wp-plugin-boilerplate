@@ -89,7 +89,7 @@ class AdminNotice {
 	public function _render() {
 		if ( $this->should_render() ) {
 
-			$translated_message = __( $this->message, PDK_PLUGIN_BOILERPLATE_PLUGIN_TEXT_DOMAIN );
+			$translated_message = __( $this->message, 'pdk-plugin-boilerplate' );
 
 			printf( '<div class="notice notice-%s %s">%s</div>',
 				$this->type,

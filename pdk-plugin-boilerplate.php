@@ -21,7 +21,6 @@ defined( 'WPINC' ) or die();
 define( 'PDK_PLUGIN_BOILERPLATE_MIN_PHP_VERSION', 7.0 );
 define( 'PDK_PLUGIN_BOILERPLATE_PLUGIN_NAME', 'PDK Plugin Boilerplate' );
 define( 'PDK_PLUGIN_BOILERPLATE_PLUGIN_VERSION', 1.0 );
-define( 'PDK_PLUGIN_BOILERPLATE_PLUGIN_TEXT_DOMAIN', 'pdk-plugin-boilerplate' );
 define( 'PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PDK_PLUGIN_BOILERPLATE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
