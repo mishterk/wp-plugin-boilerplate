@@ -8,7 +8,12 @@ use PdkPluginBoilerplate\Framework\Traits\ClassNameAsIdentifier;
 use PdkPluginBoilerplate\Framework\Traits\NonceCreationAndVerification;
 
 
-// todo - add inline script variable generation as an option
+/**
+ * Class AjaxBase
+ * @package PdkPluginBoilerplate\Framework\Ajax
+ *
+ * A base class for convenient creation of AJAX handlers. Extend this class TODO - finish this
+ */
 abstract class AjaxBase {
 
 
@@ -26,9 +31,22 @@ abstract class AjaxBase {
 
 
 	/**
-	 * @var bool  Whether or not to look for and verify a nonce when handling requests.
+	 * @var bool Whether or not to look for and verify a nonce when handling requests.
 	 */
 	protected $use_nonce = true;
+
+
+	/**
+	 * @var bool Whether or not to print the inline script containing JSON encoded variables.
+	 */
+	protected $print_inline_script = true;
+
+
+	/**
+	 * @var null|string If defined, this will be used as the id attribute of the inline script containing the
+	 *                  JSON-encoded variables. If not defined, the AJAX action will be used.
+	 */
+	protected $inline_script_id = null;
 
 
 	/**
@@ -37,7 +55,7 @@ abstract class AjaxBase {
 	 *                      the priv handler won't be hooked and this AJAX action will not handle requests made by
 	 *                      authenticated users.
 	 */
-	protected $priv_handler_method_name = 'priv';
+	protected $priv_handler_method_name = 'handle_authenticated_requests';
 
 
 	/**
@@ -46,7 +64,7 @@ abstract class AjaxBase {
 	 *                      FALSE, NULL, … – the priv handler won't be hooked and this AJAX action will not handle
 	 *                      requests made by non-authenticated users.
 	 */
-	protected $nopriv_handler_method_name = 'nopriv';
+	protected $nopriv_handler_method_name = 'handle_non_authenticated_requests';
 
 
 	/**
@@ -63,18 +81,24 @@ abstract class AjaxBase {
 		if ( is_string( $this->nopriv_handler_method_name ) ) {
 			add_action( "wp_ajax_nopriv_{$action}", [ $this, '_handle' ] );
 		}
+
+		if ( $this->print_inline_script ) {
+			add_action( 'wp_head', [ $this, '_print_inline_script' ] );
+		}
 	}
 
 
 	/**
 	 * The full URL for this AJAX action. If nonces are being used, the nonce is also added to the URL.
 	 *
+	 * @param bool $with_nonce Whether or not to include the nonce parameter in the URL
+	 *
 	 * @return string
 	 */
-	public function get_url() {
+	public function get_url( $with_nonce = true ) {
 		$url = add_query_arg( 'action', $this->get_action(), admin_url( 'admin-ajax.php' ) );
 
-		if ( $this->use_nonce ) {
+		if ( $with_nonce and $this->use_nonce ) {
 			$url = $this->add_nonce_to_url( $url );
 		}
 
@@ -112,6 +136,49 @@ abstract class AjaxBase {
 	}
 
 
+	/**
+	 * Hooked method that prints the inline script tag containing JSON-decoded variables for JavaScript consumption.
+	 */
+	public function _print_inline_script() {
+		echo $this->get_inline_script() . "\n";
+	}
+
+
+	/**
+	 * An array of variables that will be encoded for JavaScript consumption in the DOM.
+	 *
+	 * @return array
+	 */
+	protected function get_script_vars() {
+		$vars = [
+			'ajax_url' => $this->get_url( false ),
+			'action'   => $this->get_action(),
+			'nonce'    => $this->get_nonce(),
+		];
+
+		return array_merge( $vars, $this->get_custom_script_vars() );
+	}
+
+
+	/**
+	 * An associative array of variables to merge into the script vars for encoding and consumption in the DOM. These
+	 * are merged atop of the base vars so if you need to override any you can do so be defining them in this array.
+	 *
+	 * @return array
+	 */
+	protected function get_custom_script_vars() {
+		return [];
+	}
+
+
+	protected function get_inline_script() {
+		$data = json_encode( $this->get_script_vars(), JSON_UNESCAPED_SLASHES );
+		$id   = $this->inline_script_id ?? $this->get_action();
+
+		return sprintf( '<script type="application/json" id="%s">%s</script>', esc_attr( $id ), $data );
+	}
+
+
 	protected function verify_nonce() {
 		if ( $this->use_nonce and ! $this->_verify_nonce() ) {
 			wp_die( 'Nonce invalid' );
@@ -138,14 +205,12 @@ abstract class AjaxBase {
 	}
 
 
-	// todo - determine best name
-	protected function priv() {
+	protected function handle_authenticated_requests() {
 		wp_die( 'No endpoint handler defined for this action and context.', '', [ 'response' => 400 ] );
 	}
 
 
-	// todo - determine best name
-	protected function nopriv() {
+	protected function handle_non_authenticated_requests() {
 		wp_die( 'No endpoint handler defined for this action and context.', '', [ 'response' => 400 ] );
 	}
 
