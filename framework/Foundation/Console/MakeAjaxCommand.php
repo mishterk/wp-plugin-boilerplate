@@ -1,7 +1,7 @@
 <?php
 
 
-namespace PdkPluginBoilerplate\Framework\Console\WpCli;
+namespace PdkPluginBoilerplate\Framework\Foundation\Console;
 
 
 use WP_CLI;
