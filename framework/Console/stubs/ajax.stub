@@ -1,0 +1,27 @@
+<?php
+
+
+namespace PdkPluginBoilerplate\Ajax;
+
+
+use PdkPluginBoilerplate\Framework\Ajax\AjaxBase;
+
+
+class DummyClass extends AjaxBase {
+
+
+	// handling logged in users
+	protected function handle_authenticated_requests() {
+		// handle request here
+		die();
+	}
+
+
+	// handling non-logged in users
+	protected function handle_non_authenticated_requests() {
+		// handle request here
+		die();
+	}
+
+
+}
