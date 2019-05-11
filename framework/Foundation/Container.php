@@ -8,7 +8,7 @@ use Closure;
 use InvalidArgumentException;
 
 
-class Container {
+class Container implements \ArrayAccess {
 
 	/**
 	 * The raw bindings. e.g; ['some.key' => 'some value', 'another.key' => function(){…} ]
@@ -40,6 +40,13 @@ class Container {
 		}
 
 		$this->bindings[ $key ] = $concrete;
+	}
+
+
+	public function unbind( $key ) {
+		unset( $this->bindings[ $key ] );
+		unset( $this->singletons[ $key ] );
+		unset( $this->instances[ $key ] );
 	}
 
 
@@ -81,7 +88,24 @@ class Container {
 
 
 	public function extend() {
+	public function offsetExists( $offset ) {
+		return $this->is_bound( $offset );
+	}
 
+
+	public function offsetGet( $offset ) {
+		return $this->is_bound( $offset ) ? $this->make( $offset ) : null;
+	}
+
+
+	public function offsetSet( $offset, $value ) {
+		$this->bind( $offset, $value );
+	}
+
+
+	public function offsetUnset( $offset ) {
+		$this->unbind( $offset );
+	}
 	}
 
 
