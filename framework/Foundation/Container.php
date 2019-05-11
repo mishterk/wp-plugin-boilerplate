@@ -40,22 +40,9 @@ class Container implements \ArrayAccess {
 			return;
 		}
 
-		if ( ! $concrete instanceof Closure ) {
-			$concrete = function () use ( $concrete ) {
-				return $concrete;
-			};
-		}
+		$concrete = $this->enclose( $concrete );
 
 		$this->bindings[ $key ] = $concrete;
-	}
-
-
-	public function unbind( $key ) {
-		unset(
-			$this->bindings[ $key ],
-			$this->singletons[ $key ],
-			$this->instances[ $key ]
-		);
 	}
 
 
@@ -72,7 +59,7 @@ class Container implements \ArrayAccess {
 		$resolved = $this->resolve( $key );
 
 		if ( $this->is_singleton( $key ) ) {
-			return $this->instances[ $key ] ?? $this->cache_instance( $key, $resolved );
+			return $this->instances[ $key ] ?? $this->keep_instance( $key, $resolved );
 		}
 
 		return $resolved;
@@ -100,6 +87,15 @@ class Container implements \ArrayAccess {
 	}
 
 
+	public function unbind( $key ) {
+		unset(
+			$this->bindings[ $key ],
+			$this->singletons[ $key ],
+			$this->instances[ $key ]
+		);
+	}
+
+
 	public function offsetExists( $offset ) {
 		return $this->is_bound( $offset );
 	}
@@ -120,8 +116,34 @@ class Container implements \ArrayAccess {
 	}
 
 
-	protected function cache_instance( $key, $value ) {
-		return $this->instances[ $key ] = $value;
+	/**
+	 * Wrap anything that isn't a closure in a closure
+	 *
+	 * @param $concrete
+	 *
+	 * @return Closure
+	 */
+	protected function enclose( $concrete ) {
+		if ( $concrete instanceof Closure ) {
+			return $concrete;
+		}
+
+		return function () use ( $concrete ) {
+			return $concrete;
+		};
+	}
+
+
+	/**
+	 * Cache an instance for reuse on subsequent requests to the container
+	 *
+	 * @param $key
+	 * @param $instance
+	 *
+	 * @return mixed
+	 */
+	protected function keep_instance( $key, $instance ) {
+		return $this->instances[ $key ] = $instance;
 	}
 
 
