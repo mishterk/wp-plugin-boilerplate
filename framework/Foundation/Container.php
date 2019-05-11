@@ -60,7 +60,7 @@ class Container implements \ArrayAccess {
 			throw new InvalidArgumentException( "Container binding for key '$key' not found." );
 		}
 
-		$resolved = $this->resolve_binding( $this->bindings[ $key ] );
+		$resolved = $this->resolve_closure( $this->bindings[ $key ] );
 
 		// if dealing with a singleton, set the instance if not already set, then return the instance
 		if ( $this->is_singleton( $key ) ) {
@@ -119,7 +119,7 @@ class Container implements \ArrayAccess {
 	}
 
 
-	protected function resolve_binding( $binding ) {
+	protected function resolve_closure( $binding ) {
 		return ( $binding instanceof Closure )
 			? $binding()
 			: $binding;
