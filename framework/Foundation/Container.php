@@ -59,7 +59,7 @@ class Container implements \ArrayAccess {
 		$resolved = $this->resolve( $key );
 
 		if ( $this->is_singleton( $key ) ) {
-			return $this->instances[ $key ] ?? $this->keep_instance( $key, $resolved );
+			return $this->instances[ $key ] ?? $this->cache_instance( $key, $resolved );
 		}
 
 		return $resolved;
@@ -142,7 +142,7 @@ class Container implements \ArrayAccess {
 	 *
 	 * @return mixed
 	 */
-	protected function keep_instance( $key, $instance ) {
+	protected function cache_instance( $key, $instance ) {
 		return $this->instances[ $key ] = $instance;
 	}
 
