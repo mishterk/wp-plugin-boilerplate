@@ -30,13 +30,17 @@ class Container implements \ArrayAccess {
 	protected $instances = [];
 
 
-	public function bind( $key, $concrete ) {
+	public function bind( $key, $concrete, $shared = true ) {
 		if ( $concrete === null ) {
 			/*
 			 * todo - might be worth supporting null values for auto class resolution. See Laravel's container for some
 			 *  tips on how we could go about this.
 			 */
 			return;
+		}
+
+		if ( $shared ) {
+			$this->singletons[ $key ] = true;
 		}
 
 		$this->bindings[ $key ] = $concrete;
@@ -62,9 +66,8 @@ class Container implements \ArrayAccess {
 
 		$resolved = $this->resolve_closure( $this->bindings[ $key ] );
 
-		// if dealing with a singleton, set the instance if not already set, then return the instance
 		if ( $this->is_singleton( $key ) ) {
-			return $this->instances[ $key ] ?? $this->instance( $key, $resolved );
+			return $this->instances[ $key ] ?? $this->cache_instance( $key, $resolved );
 		}
 
 		return $resolved;
@@ -72,13 +75,7 @@ class Container implements \ArrayAccess {
 
 
 	public function singleton( $key, $concrete ) {
-		$this->singletons[ $key ] = true;
-		$this->bind( $key, $concrete );
-	}
-
-
-	public function instance( $key, $value ) {
-		return $this->instances[ $key ] = $value;
+		$this->bind( $key, $concrete, true );
 	}
 
 
@@ -88,6 +85,10 @@ class Container implements \ArrayAccess {
 
 
 	public function extend() {
+
+	}
+
+
 	public function offsetExists( $offset ) {
 		return $this->is_bound( $offset );
 	}
@@ -106,6 +107,10 @@ class Container implements \ArrayAccess {
 	public function offsetUnset( $offset ) {
 		$this->unbind( $offset );
 	}
+
+
+	protected function cache_instance( $key, $value ) {
+		return $this->instances[ $key ] = $value;
 	}
 
 
