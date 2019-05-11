@@ -33,7 +33,20 @@ class Container implements \ArrayAccess {
 	protected $instances = [];
 
 
+	/**
+	 * An array of key/bool pairs for tracking which keys are protected. Protected bindings cannot be overriden.
+	 * e.g; [ 'some.key' => bool(TRUE) ]
+	 *
+	 * @var array
+	 */
+	protected $protected = [];
+
+
 	public function bind( $key, $concrete ) {
+		if ( $this->is_protected( $key ) and $this->is_bound( $key ) ) {
+			throw new \RuntimeException( "Key '$key' is a protected binding and cannot be overridden." );
+		}
+
 		if ( $concrete === null ) {
 			// todo - might be worth supporting null values for auto class resolution. See Laravel's container for some
 			//  tips on how we could go about this.
@@ -73,7 +86,8 @@ class Container implements \ArrayAccess {
 
 
 	public function protected( $key, $concrete ) {
-
+		$this->protected[ $key ] = true;
+		$this->bind( $key, $concrete );
 	}
 
 
@@ -154,6 +168,11 @@ class Container implements \ArrayAccess {
 
 	protected function is_singleton( $key ) {
 		return isset( $this->singletons[ $key ] );
+	}
+
+
+	protected function is_protected( $key ) {
+		return isset( $this->protected[ $key ] );
 	}
 
 
