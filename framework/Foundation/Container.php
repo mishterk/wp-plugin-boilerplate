@@ -10,12 +10,14 @@ use InvalidArgumentException;
 
 class Container implements \ArrayAccess {
 
+
 	/**
 	 * The raw bindings. e.g; ['some.key' => 'some value', 'another.key' => function(){…} ]
 	 *
 	 * @var array
 	 */
 	protected $bindings = [];
+
 
 	/**
 	 * An array of key/bool pairs for tracking which keys are singletons. e.g; [ 'some.key' => bool(TRUE) ]
@@ -24,23 +26,24 @@ class Container implements \ArrayAccess {
 	 */
 	protected $singletons = [];
 
+
 	/**
 	 * @var array
 	 */
 	protected $instances = [];
 
 
-	public function bind( $key, $concrete, $shared = true ) {
+	public function bind( $key, $concrete ) {
 		if ( $concrete === null ) {
-			/*
-			 * todo - might be worth supporting null values for auto class resolution. See Laravel's container for some
-			 *  tips on how we could go about this.
-			 */
+			// todo - might be worth supporting null values for auto class resolution. See Laravel's container for some
+			//  tips on how we could go about this.
 			return;
 		}
 
-		if ( $shared ) {
-			$this->singletons[ $key ] = true;
+		if ( ! $concrete instanceof Closure ) {
+			$concrete = function () use ( $concrete ) {
+				return $concrete;
+			};
 		}
 
 		$this->bindings[ $key ] = $concrete;
@@ -48,9 +51,11 @@ class Container implements \ArrayAccess {
 
 
 	public function unbind( $key ) {
-		unset( $this->bindings[ $key ] );
-		unset( $this->singletons[ $key ] );
-		unset( $this->instances[ $key ] );
+		unset(
+			$this->bindings[ $key ],
+			$this->singletons[ $key ],
+			$this->instances[ $key ]
+		);
 	}
 
 
@@ -64,7 +69,7 @@ class Container implements \ArrayAccess {
 			throw new InvalidArgumentException( "Container binding for key '$key' not found." );
 		}
 
-		$resolved = $this->resolve_closure( $this->bindings[ $key ] );
+		$resolved = $this->resolve( $key );
 
 		if ( $this->is_singleton( $key ) ) {
 			return $this->instances[ $key ] ?? $this->cache_instance( $key, $resolved );
@@ -75,11 +80,17 @@ class Container implements \ArrayAccess {
 
 
 	public function singleton( $key, $concrete ) {
-		$this->bind( $key, $concrete, true );
+		$this->singletons[ $key ] = true;
+		$this->bind( $key, $concrete );
 	}
 
 
 	public function protected( $key, $concrete ) {
+
+	}
+
+
+	public function factory( $key, $concrete ) {
 
 	}
 
@@ -124,9 +135,16 @@ class Container implements \ArrayAccess {
 	}
 
 
-	protected function resolve_closure( $binding ) {
+	protected function is_factory( $key ) {
+		// todo
+	}
+
+
+	protected function resolve( $key ) {
+		$binding = $this->bindings[ $key ] ?? null;
+
 		return ( $binding instanceof Closure )
-			? $binding()
+			? $binding( $this )
 			: $binding;
 	}
 
