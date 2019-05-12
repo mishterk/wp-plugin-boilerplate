@@ -53,9 +53,7 @@ class Container implements \ArrayAccess {
 			return;
 		}
 
-		$concrete = $this->enclose( $concrete );
-
-		$this->bindings[ $key ] = $concrete;
+		$this->bindings[ $key ] = $this->enclose( $concrete );
 	}
 
 
@@ -92,12 +90,12 @@ class Container implements \ArrayAccess {
 
 
 	public function factory( $key, $concrete ) {
-
+		// todo
 	}
 
 
 	public function extend() {
-
+		// todo
 	}
 
 
@@ -181,6 +179,7 @@ class Container implements \ArrayAccess {
 	}
 
 
+	// todo - auto class resolution by reflection
 	protected function resolve( $key ) {
 		$binding = $this->bindings[ $key ] ?? null;
 
