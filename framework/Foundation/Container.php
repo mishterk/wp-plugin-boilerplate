@@ -71,10 +71,6 @@ class Container implements \ArrayAccess {
 	 * @return mixed
 	 */
 	public function make( $key ) {
-		if ( ! $this->is_bound( $key ) ) {
-			throw new InvalidArgumentException( "Container binding for key '$key' not found." );
-		}
-
 		$resolved = $this->resolve( $key );
 
 		if ( $this->is_singleton( $key ) ) {
@@ -170,6 +166,15 @@ class Container implements \ArrayAccess {
 	}
 
 
+	protected function get_bound_or_fail( $key ) {
+		if ( ! $this->is_bound( $key ) ) {
+			throw new InvalidArgumentException( "Container binding for key '$key' not found." );
+		}
+
+		return $this->bindings[ $key ];
+	}
+
+
 	protected function is_bound( $key ) {
 		return isset( $this->bindings[ $key ] );
 	}
@@ -192,7 +197,7 @@ class Container implements \ArrayAccess {
 
 	// todo - auto class resolution by reflection
 	protected function resolve( $key ) {
-		$binding = $this->bindings[ $key ] ?? null;
+		$binding = $this->get_bound_or_fail( $key );
 
 		return ( $binding instanceof Closure )
 			? $binding( $this )
