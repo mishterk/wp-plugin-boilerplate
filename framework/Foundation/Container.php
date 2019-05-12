@@ -28,6 +28,14 @@ class Container implements \ArrayAccess {
 
 
 	/**
+	 * An array of key/bool pairs for tracking which keys are factories. e.g; [ 'some.key' => bool(TRUE) ]
+	 *
+	 * @var array
+	 */
+	protected $factories = [];
+
+
+	/**
 	 * @var array
 	 */
 	protected $instances = [];
@@ -90,7 +98,8 @@ class Container implements \ArrayAccess {
 
 
 	public function factory( $key, $concrete ) {
-		// todo
+		$this->factories[ $key ] = true;
+		$this->bind( $key, $concrete );
 	}
 
 
@@ -103,6 +112,7 @@ class Container implements \ArrayAccess {
 		unset(
 			$this->bindings[ $key ],
 			$this->singletons[ $key ],
+			$this->factories[ $key ],
 			$this->protected[ $key ],
 			$this->instances[ $key ]
 		);
@@ -176,7 +186,7 @@ class Container implements \ArrayAccess {
 
 
 	protected function is_factory( $key ) {
-		// todo
+		return isset( $this->factories[ $key ] );
 	}
 
 
