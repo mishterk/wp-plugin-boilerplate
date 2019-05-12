@@ -103,6 +103,7 @@ class Container implements \ArrayAccess {
 		unset(
 			$this->bindings[ $key ],
 			$this->singletons[ $key ],
+			$this->protected[ $key ],
 			$this->instances[ $key ]
 		);
 	}
