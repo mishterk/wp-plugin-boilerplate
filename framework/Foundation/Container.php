@@ -134,6 +134,26 @@ class Container implements \ArrayAccess {
 	}
 
 
+	public function is_bound( $key ) {
+		return isset( $this->bindings[ $key ] );
+	}
+
+
+	public function is_singleton( $key ) {
+		return isset( $this->singletons[ $key ] );
+	}
+
+
+	public function is_protected( $key ) {
+		return isset( $this->protected[ $key ] );
+	}
+
+
+	public function is_factory( $key ) {
+		return isset( $this->factories[ $key ] );
+	}
+
+
 	public function offsetExists( $offset ) {
 		return $this->is_bound( $offset );
 	}
