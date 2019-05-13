@@ -14,7 +14,7 @@ class MakeAjaxCommand {
 	 * @throws \Exception
 	 */
 	public function init() {
-		WP_CLI::add_command( 'kurth make:ajax', static::class );
+		WP_CLI::add_command( 'pdkpluginbp make:ajax', static::class );
 	}
 
 
