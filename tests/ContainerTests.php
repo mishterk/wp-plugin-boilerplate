@@ -149,4 +149,40 @@ class ContainerTests extends WP_UnitTestCase {
 	}
 
 
+	public function test_unbind_method_unbinds_a_key() {
+		$container = new Container();
+		$container->bind( 'test.unbind', 'value' );
+		$container->unbind( 'test.unbind' );
+
+		$this->assertFalse( $container->is_bound( 'test.unbind' ) );
+	}
+
+
+	public function test_unbind_method_clears_all_class_properties() {
+		$container = new Container();
+
+		$container->bind( 'key1', 'value1' );
+		$container->singleton( 'key2', 'value2' );
+		$container->protected( 'key3', 'value3' );
+		$container->factory( 'key4', 'value4' );
+
+		$container->unbind( 'key1' );
+		$container->unbind( 'key2' );
+		$container->unbind( 'key3' );
+		$container->unbind( 'key4' );
+
+		$reflector = new ReflectionClass( $container );
+		$props     = $reflector->getProperties();
+
+		$merged_props = [];
+
+		foreach ( $props as $prop ) {
+			$prop->setAccessible( true );
+			$merged_props = array_merge( $merged_props, $prop->getValue( $container ) );
+		}
+
+		$this->assertEmpty( $merged_props );
+	}
+
+
 }
