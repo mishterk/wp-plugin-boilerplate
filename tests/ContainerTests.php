@@ -63,6 +63,13 @@ class ContainerTests extends WP_UnitTestCase {
 	}
 
 
+	public function test_make_method_throws_exception_when_a_binding_does_not_exist() {
+		$container = new Container();
+		$this->expectException( InvalidArgumentException::class );
+		$container->make( 'test.nonexistent' );
+	}
+
+
 	public function test_singleton_method_binds_shared_instance() {
 		$container = new Container();
 		$container->singleton( 'test.singleton', function () {
