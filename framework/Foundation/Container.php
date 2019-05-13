@@ -9,6 +9,10 @@ use InvalidArgumentException;
 use RuntimeException;
 
 
+/**
+ * Class Container
+ * @package PdkPluginBoilerplate\Framework\Foundation
+ */
 class Container implements \ArrayAccess {
 
 
@@ -51,6 +55,10 @@ class Container implements \ArrayAccess {
 	protected $protected = [];
 
 
+	/**
+	 * @param $key
+	 * @param $concrete
+	 */
 	public function bind( $key, $concrete ) {
 		if ( $this->is_protected( $key ) and $this->is_bound( $key ) ) {
 			throw new RuntimeException( "Key '$key' is a protected container binding and cannot be overridden." );
@@ -82,18 +90,30 @@ class Container implements \ArrayAccess {
 	}
 
 
+	/**
+	 * @param $key
+	 * @param $concrete
+	 */
 	public function singleton( $key, $concrete ) {
 		$this->singletons[ $key ] = true;
 		$this->bind( $key, $concrete );
 	}
 
 
+	/**
+	 * @param $key
+	 * @param $concrete
+	 */
 	public function protected( $key, $concrete ) {
 		$this->protected[ $key ] = true;
 		$this->bind( $key, $concrete );
 	}
 
 
+	/**
+	 * @param $key
+	 * @param $concrete
+	 */
 	public function factory( $key, $concrete ) {
 		$this->factories[ $key ] = true;
 		$this->bind( $key, $concrete );
@@ -123,6 +143,9 @@ class Container implements \ArrayAccess {
 	}
 
 
+	/**
+	 * @param $key
+	 */
 	public function unbind( $key ) {
 		unset(
 			$this->bindings[ $key ],
@@ -134,41 +157,78 @@ class Container implements \ArrayAccess {
 	}
 
 
+	/**
+	 * @param $key
+	 *
+	 * @return bool
+	 */
 	public function is_bound( $key ) {
 		return isset( $this->bindings[ $key ] );
 	}
 
 
+	/**
+	 * @param $key
+	 *
+	 * @return bool
+	 */
 	public function is_singleton( $key ) {
 		return isset( $this->singletons[ $key ] );
 	}
 
 
+	/**
+	 * @param $key
+	 *
+	 * @return bool
+	 */
 	public function is_protected( $key ) {
 		return isset( $this->protected[ $key ] );
 	}
 
 
+	/**
+	 * @param $key
+	 *
+	 * @return bool
+	 */
 	public function is_factory( $key ) {
 		return isset( $this->factories[ $key ] );
 	}
 
 
+	/**
+	 * @param mixed $offset
+	 *
+	 * @return bool
+	 */
 	public function offsetExists( $offset ) {
 		return $this->is_bound( $offset );
 	}
 
 
+	/**
+	 * @param mixed $offset
+	 *
+	 * @return mixed|null
+	 */
 	public function offsetGet( $offset ) {
 		return $this->is_bound( $offset ) ? $this->make( $offset ) : null;
 	}
 
 
+	/**
+	 * @param mixed $offset
+	 * @param mixed $value
+	 */
 	public function offsetSet( $offset, $value ) {
 		$this->bind( $offset, $value );
 	}
 
 
+	/**
+	 * @param mixed $offset
+	 */
 	public function offsetUnset( $offset ) {
 		$this->unbind( $offset );
 	}
@@ -205,6 +265,11 @@ class Container implements \ArrayAccess {
 	}
 
 
+	/**
+	 * @param $key
+	 *
+	 * @return mixed
+	 */
 	protected function get_bound_or_fail( $key ) {
 		if ( ! $this->is_bound( $key ) ) {
 			throw new InvalidArgumentException( "Container binding for key '$key' not found." );
@@ -215,6 +280,12 @@ class Container implements \ArrayAccess {
 
 
 	// todo - auto class resolution by reflection
+
+	/**
+	 * @param $key
+	 *
+	 * @return mixed
+	 */
 	protected function resolve( $key ) {
 		$binding = $this->get_bound_or_fail( $key );
 
