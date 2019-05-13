@@ -214,26 +214,6 @@ class Container implements \ArrayAccess {
 	}
 
 
-	protected function is_bound( $key ) {
-		return isset( $this->bindings[ $key ] );
-	}
-
-
-	protected function is_singleton( $key ) {
-		return isset( $this->singletons[ $key ] );
-	}
-
-
-	protected function is_protected( $key ) {
-		return isset( $this->protected[ $key ] );
-	}
-
-
-	protected function is_factory( $key ) {
-		return isset( $this->factories[ $key ] );
-	}
-
-
 	// todo - auto class resolution by reflection
 	protected function resolve( $key ) {
 		$binding = $this->get_bound_or_fail( $key );
