@@ -1,10 +1,11 @@
 <?php
 
 
-namespace PdkPluginBoilerplate\Framework\Foundation;
+namespace PdkPluginBoilerplate\Framework\Container;
 
 
-use PdkPluginBoilerplate\Framework\Foundation\Providers\WpCliServiceProvider;
+use PdkPluginBoilerplate\Framework\Providers\WpCliServiceProvider;
+use PdkPluginBoilerplate\Framework\Providers\ServiceProviderBase;
 use PdkPluginBoilerplate\Framework\Traits\Singleton;
 
 

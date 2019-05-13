@@ -1,7 +1,7 @@
 <?php
 
 
-namespace PdkPluginBoilerplate\Framework\Foundation;
+namespace PdkPluginBoilerplate\Framework\Container;
 
 
 use Closure;

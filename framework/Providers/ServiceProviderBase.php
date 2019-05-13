@@ -1,7 +1,10 @@
 <?php
 
 
-namespace PdkPluginBoilerplate\Framework\Foundation;
+namespace PdkPluginBoilerplate\Framework\Providers;
+
+
+use PdkPluginBoilerplate\Framework\Container\Container;
 
 
 abstract class ServiceProviderBase {

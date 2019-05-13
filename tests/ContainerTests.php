@@ -1,7 +1,7 @@
 <?php
 
 
-use PdkPluginBoilerplate\Framework\Foundation\Container;
+use PdkPluginBoilerplate\Framework\Container\Container;
 
 
 class ContainerTests extends WP_UnitTestCase {

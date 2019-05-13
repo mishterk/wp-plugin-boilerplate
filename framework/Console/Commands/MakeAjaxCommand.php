@@ -1,7 +1,7 @@
 <?php
 
 
-namespace PdkPluginBoilerplate\Framework\Foundation\Console;
+namespace PdkPluginBoilerplate\Framework\Console\Commands;
 
 
 use WP_CLI;

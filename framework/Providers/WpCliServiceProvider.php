@@ -1,19 +1,18 @@
 <?php
 
 
-namespace PdkPluginBoilerplate\Framework\Foundation\Providers;
+namespace PdkPluginBoilerplate\Framework\Providers;
 
 
-use PdkPluginBoilerplate\Framework\Foundation\Console\MakeAjaxCommand;
-use PdkPluginBoilerplate\Framework\Foundation\Container;
-use PdkPluginBoilerplate\Framework\Foundation\ServiceProviderBase;
+use PdkPluginBoilerplate\Framework\Console\Commands\MakeAjaxCommand;
+use PdkPluginBoilerplate\Framework\Container\Container;
 
 
 class WpCliServiceProvider extends ServiceProviderBase {
 
 
 	/**
-	 * @var Container
+	 * @var \PdkPluginBoilerplate\Framework\Container\Container
 	 */
 	protected $app;
 
