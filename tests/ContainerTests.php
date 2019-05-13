@@ -34,10 +34,32 @@ class ContainerTests extends WP_UnitTestCase {
 	}
 
 
+	public function test_bind_method_can_override_scalar_values() {
+		$container = new Container();
+		$container->bind( 'test.override', 'some value' );
+		$container->bind( 'test.override', 'some new value' );
+
+		$this->assertEquals( 'some new value', $container->make( 'test.override' ) );
+	}
+
+
 	public function test_bind_method_throws_exception_when_key_not_found() {
 		$container = new Container();
 		$this->expectException( InvalidArgumentException::class );
 		$container->make( 'something' );
+	}
+
+
+	public function test_bind_method_binds_shared_instances_by_default() {
+		$container = new Container();
+		$container->singleton( 'test.shared', function () {
+			return new stdClass();
+		} );
+
+		$bound1 = $container->make( 'test.shared' );
+		$bound2 = $container->make( 'test.shared' );
+
+		$this->assertTrue( $bound1 === $bound2 );
 	}
 
 
@@ -54,10 +76,70 @@ class ContainerTests extends WP_UnitTestCase {
 	}
 
 
-	//public function test_protected_method_prevents_rebinding_of_same_key() {
-	//	$container = new Container();
-	//	$container->protected( 'test.protected', 'some value' );
-	//}
+	public function test_container_is_array_accessible() {
+		$container                 = new Container();
+		$container['test.var']     = 'some value';
+		$container['test.closure'] = function () {
+			$obj       = new stdClass();
+			$obj->data = 'some data here';
+
+			return $obj;
+		};
+
+		$this->assertSame( 'some value', $container['test.var'] );
+		$this->assertSame( 'some data here', $container['test.closure']->data );
+	}
+
+
+	public function test_protected_method_prevents_rebinding_of_same_key() {
+		$container = new Container();
+		$container->protected( 'test.protected', 'some value' );
+		$this->expectException( RuntimeException::class );
+		$container->protected( 'test.protected', 'some other value' );
+	}
+
+
+	public function test_factory_method_bindings_make_unique_instances() {
+		$container = new Container();
+		$container->factory( 'test.factory', function () {
+			return new stdClass();
+		} );
+
+		$obj1 = $container->make( 'test.factory' );
+		$obj2 = $container->make( 'test.factory' );
+
+		$this->assertFalse( $obj1 === $obj2 );
+	}
+
+
+	public function test_extend_method_extends_an_existing_binding() {
+		$container = new Container();
+		$container->bind( 'test.extend', function () {
+			$obj       = new stdClass();
+			$obj->data = 'initial';
+
+			return $obj;
+		} );
+
+		$container->extend( 'test.extend', function ( $instance, $container ) {
+			$instance->data = 'changed';
+
+			return $instance;
+		} );
+
+		$obj = $container->make( 'test.extend' );
+
+		$this->assertEquals( 'changed', $obj->data );
+	}
+
+
+	public function test_extend_method_throws_exception_where_a_non_existent_binding_is_extended() {
+		$container = new Container();
+		$this->expectException( InvalidArgumentException::class );
+		$container->extend( 'test.extendfail', function ( $instance, $container ) {
+			return $instance;
+		} );
+	}
 
 
 }
