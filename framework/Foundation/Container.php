@@ -6,6 +6,7 @@ namespace PdkPluginBoilerplate\Framework\Foundation;
 
 use Closure;
 use InvalidArgumentException;
+use RuntimeException;
 
 
 class Container implements \ArrayAccess {
@@ -52,13 +53,13 @@ class Container implements \ArrayAccess {
 
 	public function bind( $key, $concrete ) {
 		if ( $this->is_protected( $key ) and $this->is_bound( $key ) ) {
-			throw new \RuntimeException( "Key '$key' is a protected binding and cannot be overridden." );
+			throw new RuntimeException( "Key '$key' is a protected container binding and cannot be overridden." );
 		}
 
 		if ( $concrete === null ) {
 			// todo - might be worth supporting null values for auto class resolution. See Laravel's container for some
 			//  tips on how we could go about this.
-			return;
+			throw new InvalidArgumentException( "NULL is not a supported container binding value. Value for key '$key' needs to be changed." );
 		}
 
 		$this->bindings[ $key ] = $this->enclose( $concrete );
@@ -99,8 +100,26 @@ class Container implements \ArrayAccess {
 	}
 
 
-	public function extend() {
-		// todo
+	/**
+	 * Extend an existing binding. This will wrap the existing binding in the supplied closure which will be invoked
+	 * after the existing binding effectively allowing modification of the instantiated value immediately after it is
+	 * created.
+	 *
+	 * @param string $key
+	 * @param Closure $closure
+	 */
+	public function extend( $key, Closure $closure ) {
+		$binding = $this->get_bound_or_fail( $key );
+
+		if ( ! is_callable( $binding ) ) {
+			throw new InvalidArgumentException( "Container binding for key '$key' is not callable and cannot be extended." );
+		}
+
+		$extended = function ( $container ) use ( $closure, $binding ) {
+			return $closure( $binding( $container ), $closure );
+		};
+
+		$this->bind( $key, $extended );
 	}
 
 
@@ -147,7 +166,7 @@ class Container implements \ArrayAccess {
 			return $concrete;
 		}
 
-		return function () use ( $concrete ) {
+		return function ( Container $container ) use ( $concrete ) {
 			return $concrete;
 		};
 	}
