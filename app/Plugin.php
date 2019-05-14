@@ -33,6 +33,7 @@ class Plugin {
 		$autoloader->register();
 		$autoloader->addNamespace( 'PdkPluginBoilerplate', PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . 'app' );
 		$autoloader->addNamespace( 'PdkPluginBoilerplate\\Framework', PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . 'framework' );
+		$autoloader->addNamespace( 'PdkPluginBoilerplate\\Tests', PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . 'tests' );
 	}
 
 
