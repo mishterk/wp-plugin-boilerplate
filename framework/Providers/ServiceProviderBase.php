@@ -4,7 +4,7 @@
 namespace PdkPluginBoilerplate\Framework\Providers;
 
 
-use PdkPluginBoilerplate\Framework\Container\Container;
+use PdkPluginBoilerplate\Framework\Container\Application;
 
 
 abstract class ServiceProviderBase {
@@ -13,11 +13,11 @@ abstract class ServiceProviderBase {
 	/**
 	 * Register this service provider.
 	 *
-	 * @param Container $container
+	 * @param Application $app
 	 *
 	 * @return void
 	 */
-	abstract public function register( Container $container );
+	abstract public function register( Application $app );
 
 
 }

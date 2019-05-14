@@ -5,27 +5,27 @@ namespace PdkPluginBoilerplate\Framework\Providers;
 
 
 use PdkPluginBoilerplate\Framework\Console\Commands\MakeAjaxCommand;
-use PdkPluginBoilerplate\Framework\Container\Container;
+use PdkPluginBoilerplate\Framework\Container\Application;
 
 
 class WpCliServiceProvider extends ServiceProviderBase {
 
 
 	/**
-	 * @var \PdkPluginBoilerplate\Framework\Container\Container
+	 * @var Application
 	 */
 	protected $app;
 
 
 	/**
-	 * @param Container $container
+	 * @param Application $app
 	 */
-	public function register( Container $container ) {
+	public function register( Application $app ) {
 		if ( ! $this->is_running_wpcli() ) {
 			return;
 		}
 
-		$this->app = $container;
+		$this->app = $app;
 
 		$this->registerMakeAjaxCommand();
 	}
