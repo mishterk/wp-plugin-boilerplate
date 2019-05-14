@@ -1,0 +1,26 @@
+<?php
+
+
+namespace PdkPluginBoilerplate\Providers;
+
+
+use PdkPluginBoilerplate\Framework\Container\Application;
+use PdkPluginBoilerplate\Framework\Providers\ServiceProviderBase;
+
+
+class DummyClass extends ServiceProviderBase {
+
+
+	/**
+     * @param Application $app
+     */
+    public function register( Application $app ) {
+
+        //$app->bind('key', function( $app ){
+        //    return new SomeClass($app->make('some_dependency'));
+        //});
+
+    }
+
+
+}
