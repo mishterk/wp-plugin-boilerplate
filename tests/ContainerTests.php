@@ -1,7 +1,15 @@
 <?php
 
 
+namespace PdkPluginBoilerplate\Tests;
+
+
+use InvalidArgumentException;
 use PdkPluginBoilerplate\Framework\Container\Container;
+use ReflectionClass;
+use RuntimeException;
+use stdClass;
+use WP_UnitTestCase;
 
 
 class ContainerTests extends WP_UnitTestCase {
