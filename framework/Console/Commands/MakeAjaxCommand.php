@@ -7,7 +7,7 @@ namespace PdkPluginBoilerplate\Framework\Console\Commands;
 use WP_CLI;
 
 
-class MakeAjaxCommand {
+class MakeAjaxCommand extends GeneratorCommandBase {
 
 
 	/**
@@ -33,10 +33,8 @@ class MakeAjaxCommand {
 		$class_name  = $args[0];
 		$destination = "$target_dir/$class_name.php";
 
-		// if already exists, bail
-		if ( file_exists( $destination ) ) {
-			WP_CLI::error( "$class_name class already exists." );
-		}
+		$this->ensure_directory_path_exists( $target_dir );
+		$this->prevent_file_override( $destination );
 
 		$stub = str_replace(
 			[
