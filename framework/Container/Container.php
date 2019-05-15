@@ -310,12 +310,12 @@ class Container implements \ArrayAccess {
 	 * @return mixed
 	 */
 	protected function resolve( $key ) {
-		$binding = $this->get_bound_or_fail( $key );
-
 		if ( isset( $this->resolved[ $key ], $this->instances[ $key ] ) ) {
 			$resolved = $this->instances[ $key ];
 
 		} else {
+			$binding = $this->get_bound_or_fail( $key );
+
 			$resolved = ( $binding instanceof Closure )
 				? $binding( $this )
 				: $binding;
