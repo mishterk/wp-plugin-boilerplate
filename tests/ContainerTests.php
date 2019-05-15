@@ -15,6 +15,21 @@ use WP_UnitTestCase;
 class ContainerTests extends WP_UnitTestCase {
 
 
+	public function test_bind_method_binds_single_instances_by_default() {
+		$container = new Container();
+		$container->bind( 'test.key', function () {
+			$obj = new stdClass();
+
+			return $obj;
+		} );
+
+		$obj1 = $container->make( 'test.key' );
+		$obj2 = $container->make( 'test.key' );
+
+		$this->assertTrue( $obj1 === $obj2 );
+	}
+
+
 	public function test_bind_method_binds_closures_to_keys() {
 		$container = new Container();
 		$container->bind( 'test.key', function () {
@@ -173,11 +188,21 @@ class ContainerTests extends WP_UnitTestCase {
 		$container->singleton( 'key2', 'value2' );
 		$container->protected( 'key3', 'value3' );
 		$container->factory( 'key4', 'value4' );
+		$container->factory( 'key5', function () {
+			return 'whatever';
+		} );
+
+		$container->make( 'key1' );
+		$container->make( 'key2' );
+		$container->make( 'key3' );
+		$container->make( 'key4' );
+		$container->make( 'key5' );
 
 		$container->unbind( 'key1' );
 		$container->unbind( 'key2' );
 		$container->unbind( 'key3' );
 		$container->unbind( 'key4' );
+		$container->unbind( 'key5' );
 
 		$reflector = new ReflectionClass( $container );
 		$props     = $reflector->getProperties();

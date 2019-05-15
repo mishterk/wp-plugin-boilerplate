@@ -17,15 +17,17 @@ class Container implements \ArrayAccess {
 
 
 	/**
-	 * The raw bindings. e.g; ['some.key' => 'some value', 'another.key' => function(){…} ]
+	 * The raw bindings.
+	 * e.g; ['some.key' => 'some value', 'another.key' => function(){…} ]
 	 *
-	 * @var array
+	 * @var Closure array
 	 */
 	protected $bindings = [];
 
 
 	/**
-	 * An array of key/bool pairs for tracking which keys are singletons. e.g; [ 'some.key' => bool(TRUE) ]
+	 * An array of key/bool pairs for tracking which keys are singletons.
+	 * e.g; [ 'some.key' => bool(TRUE) ]
 	 *
 	 * @var array
 	 */
@@ -33,7 +35,8 @@ class Container implements \ArrayAccess {
 
 
 	/**
-	 * An array of key/bool pairs for tracking which keys are factories. e.g; [ 'some.key' => bool(TRUE) ]
+	 * An array of key/bool pairs for tracking which keys are factories.
+	 * e.g; [ 'some.key' => bool(TRUE) ]
 	 *
 	 * @var array
 	 */
@@ -41,6 +44,8 @@ class Container implements \ArrayAccess {
 
 
 	/**
+	 * An array of resolved bindings against their keys.
+	 *
 	 * @var array
 	 */
 	protected $instances = [];
@@ -56,10 +61,20 @@ class Container implements \ArrayAccess {
 
 
 	/**
-	 * @param $key
-	 * @param $concrete
+	 * An array of key/bool pairs for tracking which bindings have been resolved.
+	 * e.g; [ 'some.key' => bool(TRUE) ]
+	 *
+	 * @var array
 	 */
-	public function bind( $key, $concrete ) {
+	protected $resolved = [];
+
+
+	/**
+	 * @param string $key
+	 * @param mixed $concrete
+	 * @param bool $shared
+	 */
+	public function bind( $key, $concrete, $shared = true ) {
 		if ( $this->is_protected( $key ) and $this->is_bound( $key ) ) {
 			throw new RuntimeException( "Key '$key' is a protected container binding and cannot be overridden." );
 		}
@@ -68,6 +83,10 @@ class Container implements \ArrayAccess {
 			// todo - might be worth supporting null values for auto class resolution. See Laravel's container for some
 			//  tips on how we could go about this.
 			throw new InvalidArgumentException( "NULL is not a supported container binding value. Value for key '$key' needs to be changed." );
+		}
+
+		if ( $shared ) {
+			$this->singletons[ $key ] = true;
 		}
 
 		$this->bindings[ $key ] = $this->enclose( $concrete );
@@ -86,7 +105,9 @@ class Container implements \ArrayAccess {
 			return $this->instances[ $key ] ?? $this->cache_instance( $key, $resolved );
 		}
 
-		return $resolved;
+		return ( $this->is_factory( $key ) and is_callable( $resolved ) )
+			? $resolved()
+			: $resolved;
 	}
 
 
@@ -116,7 +137,10 @@ class Container implements \ArrayAccess {
 	 */
 	public function factory( $key, $concrete ) {
 		$this->factories[ $key ] = true;
-		$this->bind( $key, $concrete );
+
+		$this->bind( $key, function () use ( $key, $concrete ) {
+			return $concrete;
+		}, false );
 	}
 
 
@@ -152,7 +176,8 @@ class Container implements \ArrayAccess {
 			$this->singletons[ $key ],
 			$this->factories[ $key ],
 			$this->protected[ $key ],
-			$this->instances[ $key ]
+			$this->instances[ $key ],
+			$this->resolved[ $key ]
 		);
 	}
 
@@ -279,8 +304,6 @@ class Container implements \ArrayAccess {
 	}
 
 
-	// todo - auto class resolution by reflection
-
 	/**
 	 * @param $key
 	 *
@@ -289,9 +312,18 @@ class Container implements \ArrayAccess {
 	protected function resolve( $key ) {
 		$binding = $this->get_bound_or_fail( $key );
 
-		return ( $binding instanceof Closure )
-			? $binding( $this )
-			: $binding;
+		if ( isset( $this->resolved[ $key ], $this->instances[ $key ] ) ) {
+			$resolved = $this->instances[ $key ];
+
+		} else {
+			$resolved = ( $binding instanceof Closure )
+				? $binding( $this )
+				: $binding;
+
+			$this->resolved[ $key ] = true;
+		}
+
+		return $resolved;
 	}
 
 
