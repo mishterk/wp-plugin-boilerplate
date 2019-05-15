@@ -29,6 +29,9 @@ if ( version_compare( PHP_VERSION, PDK_PLUGIN_BOILERPLATE_MIN_PHP_VERSION, '>=' 
 	$plugin = new \PdkPluginBoilerplate\Plugin();
 	$plugin->init();
 
+	$app = new \PdkPluginBoilerplate\Framework\Container\Application();
+	$app->register_provider(new \PdkPluginBoilerplate\Providers\AjaxServiceProvider());
+
 } else {
 	require_once PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . 'framework/AdminNotices/AdminNotice.php';
 	require_once PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . 'app/AdminNotices/FailedPhpVersionNotice.php';
