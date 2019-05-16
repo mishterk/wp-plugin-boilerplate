@@ -6,6 +6,13 @@ namespace PdkPluginBoilerplate\Tests;
 
 use InvalidArgumentException;
 use PdkPluginBoilerplate\Framework\Container\Container;
+use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\DependencyFour;
+use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\DependencyOne;
+use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\DependencyThree;
+use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\DependencyTwo;
+use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\RootClass;
+use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\RootClassSimple;
+use PdkPluginBoilerplate\Tests\Mocks\ServiceProvider;
 use ReflectionClass;
 use RuntimeException;
 use stdClass;
@@ -215,6 +222,30 @@ class ContainerTests extends WP_UnitTestCase {
 		}
 
 		$this->assertEmpty( $merged_props );
+	}
+
+
+	public function test_make_method_builds_a_class_without_constructor_where_class_name_is_bound() {
+		$container = new Container();
+
+		$container->bind( RootClassSimple::class );
+
+		$this->assertInstanceOf( RootClassSimple::class, $container->make( RootClassSimple::class ) );
+	}
+
+
+	public function test_make_method_builds_a_class_where_class_name_is_bound() {
+		$container = new Container();
+
+		$container->bind( RootClass::class );
+		$container->bind( DependencyOne::class );
+		$container->bind( DependencyTwo::class );
+		$container->bind( DependencyThree::class );
+		$container->bind( DependencyFour::class );
+
+		$instance = $container->make( RootClass::class );
+
+		$this->assertInstanceOf( RootClass::class, $instance );
 	}
 
 

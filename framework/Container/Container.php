@@ -74,15 +74,13 @@ class Container implements \ArrayAccess {
 	 * @param mixed $concrete
 	 * @param bool $shared
 	 */
-	public function bind( $key, $concrete, $shared = true ) {
+	public function bind( $key, $concrete = null, $shared = true ) {
 		if ( $this->is_protected( $key ) and $this->is_bound( $key ) ) {
 			throw new RuntimeException( "Key '$key' is a protected container binding and cannot be overridden." );
 		}
 
 		if ( $concrete === null ) {
-			// todo - might be worth supporting null values for auto class resolution. See Laravel's container for some
-			//  tips on how we could go about this.
-			throw new InvalidArgumentException( "NULL is not a supported container binding value. Value for key '$key' needs to be changed." );
+			$concrete = $key;
 		}
 
 		if ( $shared ) {
@@ -320,10 +318,60 @@ class Container implements \ArrayAccess {
 				? $binding( $this )
 				: $binding;
 
+			if ( $this->is_buildable( $resolved ) ) {
+				$resolved = $this->build( $resolved );
+			}
+
 			$this->resolved[ $key ] = true;
 		}
 
 		return $resolved;
+	}
+
+
+	protected function is_buildable( $class_name ) {
+		return is_string( $class_name ) and class_exists( $class_name );
+	}
+
+
+	protected function build( $class_name ) {
+		$reflector = new \ReflectionClass( $class_name );
+
+		if ( ! $reflector->isInstantiable() ) {
+			throw new \Exception( "Failed to build container binding – '$class_name' is not instantiable." );
+		}
+
+		$constructor = $reflector->getConstructor();
+
+		if ( is_null( $constructor ) ) {
+			return new $class_name;
+		}
+
+		$resolved_params = [];
+		$dependencies    = $constructor->getParameters();
+
+		foreach ( $dependencies as $dependency ) {
+
+			if ( $class = $dependency->getClass() ) {
+				$resolved_params[ $dependency->getName() ] = $this->build( $class->getName() );
+
+			} else {
+				if ( $dependency instanceof Closure ) {
+					$v = $dependency();
+
+				} elseif ( $dependency->isDefaultValueAvailable() ) {
+					$v = $dependency->getDefaultValue();
+
+				} else {
+					throw new \Exception( "Failed to resolved dependency '{$dependency->getName()}' for '$class_name'" );
+				}
+
+				$resolved_params[ $dependency->getName() ] = $v;
+			}
+
+		}
+
+		return $reflector->newInstanceArgs( $resolved_params );
 	}
 
 
