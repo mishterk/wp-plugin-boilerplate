@@ -225,7 +225,7 @@ class ContainerTests extends WP_UnitTestCase {
 	}
 
 
-	public function test_make_method_builds_a_class_without_constructor_where_class_name_is_bound() {
+	public function test_make_method_builds_a_class_without_constructor_where_class_name_is_bound_as_key() {
 		$container = new Container();
 
 		$container->bind( RootClassSimple::class );
@@ -234,7 +234,16 @@ class ContainerTests extends WP_UnitTestCase {
 	}
 
 
-	public function test_make_method_builds_a_class_where_class_name_is_bound() {
+	public function test_make_method_builds_a_class_without_constructor_where_class_name_is_bound_to_key() {
+		$container = new Container();
+
+		$container->bind( 'test.build', RootClassSimple::class );
+
+		$this->assertInstanceOf( RootClassSimple::class, $container->make( 'test.build' ) );
+	}
+
+
+	public function test_make_method_builds_a_class_where_class_names_are_bound_as_keys() {
 		$container = new Container();
 
 		$container->bind( RootClass::class );
@@ -244,6 +253,21 @@ class ContainerTests extends WP_UnitTestCase {
 		$container->bind( DependencyFour::class );
 
 		$instance = $container->make( RootClass::class );
+
+		$this->assertInstanceOf( RootClass::class, $instance );
+	}
+
+
+	public function test_make_method_builds_a_class_where_class_names_are_bound_to_keys() {
+		$container = new Container();
+
+		$container->bind( 'test.root', RootClass::class );
+		$container->bind( 'test.dep.1', DependencyOne::class );
+		$container->bind( 'test.dep.2', DependencyTwo::class );
+		$container->bind( 'test.dep.3', DependencyThree::class );
+		$container->bind( 'test.dep.4', DependencyFour::class );
+
+		$instance = $container->make( 'test.root' );
 
 		$this->assertInstanceOf( RootClass::class, $instance );
 	}

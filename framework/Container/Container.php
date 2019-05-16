@@ -95,6 +95,7 @@ class Container implements \ArrayAccess {
 	 * @param $key
 	 *
 	 * @return mixed
+	 * @throws \Exception
 	 */
 	public function make( $key ) {
 		$resolved = $this->resolve( $key );
@@ -234,6 +235,7 @@ class Container implements \ArrayAccess {
 	 * @param mixed $offset
 	 *
 	 * @return mixed|null
+	 * @throws \Exception
 	 */
 	public function offsetGet( $offset ) {
 		return $this->is_bound( $offset ) ? $this->make( $offset ) : null;
@@ -306,6 +308,7 @@ class Container implements \ArrayAccess {
 	 * @param $key
 	 *
 	 * @return mixed
+	 * @throws \Exception
 	 */
 	protected function resolve( $key ) {
 		if ( isset( $this->resolved[ $key ], $this->instances[ $key ] ) ) {
