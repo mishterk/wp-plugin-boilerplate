@@ -16,12 +16,8 @@
  */
 
 
-use PdkPluginBoilerplate\Framework\AutoLoader;
-
-
 // If this file is called directly, abort.
 defined( 'WPINC' ) or die();
-
 
 define( 'PDK_PLUGIN_BOILERPLATE_MIN_PHP_VERSION', 7.0 );
 define( 'PDK_PLUGIN_BOILERPLATE_PLUGIN_NAME', 'PDK Plugin Boilerplate' );
@@ -29,15 +25,23 @@ define( 'PDK_PLUGIN_BOILERPLATE_PLUGIN_VERSION', 1.0 );
 define( 'PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PDK_PLUGIN_BOILERPLATE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
+require_once PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . '/framework/AutoLoader.php';
 
-if ( version_compare( PHP_VERSION, PDK_PLUGIN_BOILERPLATE_MIN_PHP_VERSION, '>=' ) ) {
-	require_once PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . '/framework/AutoLoader.php';
-	$autoloader = new AutoLoader();
-	$autoloader->register();
-	$autoloader->addNamespace( 'PdkPluginBoilerplate', PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . 'app' );
-	$autoloader->addNamespace( 'PdkPluginBoilerplate\\Framework', PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . 'framework' );
-	$autoloader->addNamespace( 'PdkPluginBoilerplate\\Tests', PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . 'tests' );
+$autoloader = new \PdkPluginBoilerplate\Framework\AutoLoader();
+$autoloader->register();
+$autoloader->addNamespace( 'PdkPluginBoilerplate', PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . 'app' );
+$autoloader->addNamespace( 'PdkPluginBoilerplate\\Framework', PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . 'framework' );
+$autoloader->addNamespace( 'PdkPluginBoilerplate\\Tests', PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . 'tests' );
 
+if ( false === version_compare( PHP_VERSION, PDK_PLUGIN_BOILERPLATE_MIN_PHP_VERSION, '>=' ) ) {
+
+	// Plugin won't load due to incompatible environmental conditions
+	$notice = new \PdkPluginBoilerplate\AdminNotices\FailedPhpVersionNotice( PDK_PLUGIN_BOILERPLATE_PLUGIN_NAME, PDK_PLUGIN_BOILERPLATE_MIN_PHP_VERSION );
+	$notice->init();
+
+} else {
+
+	// Load the plugin
 	$plugin = new \PdkPluginBoilerplate\Framework\Container\Plugin( PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR, PDK_PLUGIN_BOILERPLATE_PLUGIN_URL );
 	$plugin->register_provider( new \PdkPluginBoilerplate\Providers\AjaxServiceProvider() );
 
@@ -48,9 +52,4 @@ if ( version_compare( PHP_VERSION, PDK_PLUGIN_BOILERPLATE_MIN_PHP_VERSION, '>=' 
 		wp_enqueue_script( 'pdk-plugin-boilerplate', PDK_PLUGIN_BOILERPLATE_PLUGIN_URL . 'assets/build/js/app.js', [ 'jquery' ], PDK_PLUGIN_BOILERPLATE_PLUGIN_VERSION, true );
 	} );
 
-} else {
-	require_once PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . 'framework/AdminNotices/AdminNotice.php';
-	require_once PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR . 'app/AdminNotices/FailedPhpVersionNotice.php';
-	$notice = new \PdkPluginBoilerplate\AdminNotices\FailedPhpVersionNotice( PDK_PLUGIN_BOILERPLATE_PLUGIN_NAME, PDK_PLUGIN_BOILERPLATE_MIN_PHP_VERSION );
-	$notice->init();
 }
