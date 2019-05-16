@@ -5,7 +5,9 @@ namespace PdkPluginBoilerplate\Framework\Container;
 
 
 use Closure;
+use Exception;
 use InvalidArgumentException;
+use ReflectionClass;
 use RuntimeException;
 
 
@@ -95,7 +97,7 @@ class Container implements \ArrayAccess {
 	 * @param $key
 	 *
 	 * @return mixed
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function make( $key ) {
 		$resolved = $this->resolve( $key );
@@ -235,7 +237,7 @@ class Container implements \ArrayAccess {
 	 * @param mixed $offset
 	 *
 	 * @return mixed|null
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function offsetGet( $offset ) {
 		return $this->is_bound( $offset ) ? $this->make( $offset ) : null;
@@ -308,7 +310,7 @@ class Container implements \ArrayAccess {
 	 * @param $key
 	 *
 	 * @return mixed
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	protected function resolve( $key ) {
 		if ( isset( $this->resolved[ $key ], $this->instances[ $key ] ) ) {
@@ -332,16 +334,29 @@ class Container implements \ArrayAccess {
 	}
 
 
+	/**
+	 * @param $class_name
+	 *
+	 * @return bool
+	 */
 	protected function is_buildable( $class_name ) {
 		return is_string( $class_name ) and class_exists( $class_name );
 	}
 
 
+	/**
+	 * Attempt to build a class and its dependencies (recursively) using reflection.
+	 *
+	 * @param $class_name
+	 *
+	 * @return object
+	 * @throws \ReflectionException
+	 */
 	protected function build( $class_name ) {
-		$reflector = new \ReflectionClass( $class_name );
+		$reflector = new ReflectionClass( $class_name );
 
 		if ( ! $reflector->isInstantiable() ) {
-			throw new \Exception( "Failed to build container binding – '$class_name' is not instantiable." );
+			throw new Exception( "Failed to build container binding – '$class_name' is not instantiable." );
 		}
 
 		$constructor = $reflector->getConstructor();
@@ -350,31 +365,31 @@ class Container implements \ArrayAccess {
 			return new $class_name;
 		}
 
-		$resolved_params = [];
-		$dependencies    = $constructor->getParameters();
+		$resolved = [];
+		$args     = $constructor->getParameters();
 
-		foreach ( $dependencies as $dependency ) {
+		foreach ( $args as $arg ) {
 
-			if ( $class = $dependency->getClass() ) {
-				$resolved_params[ $dependency->getName() ] = $this->build( $class->getName() );
+			if ( $class = $arg->getClass() ) {
+				$resolved[] = $this->build( $class->getName() );
 
 			} else {
-				if ( $dependency instanceof Closure ) {
-					$v = $dependency();
+				if ( $arg instanceof Closure ) {
+					$v = $arg();
 
-				} elseif ( $dependency->isDefaultValueAvailable() ) {
-					$v = $dependency->getDefaultValue();
+				} elseif ( $arg->isDefaultValueAvailable() ) {
+					$v = $arg->getDefaultValue();
 
 				} else {
-					throw new \Exception( "Failed to resolved dependency '{$dependency->getName()}' for '$class_name'" );
+					throw new Exception( "Failed to resolved dependency '{$arg->getName()}' for '$class_name'" );
 				}
 
-				$resolved_params[ $dependency->getName() ] = $v;
+				$resolved[] = $v;
 			}
 
 		}
 
-		return $reflector->newInstanceArgs( $resolved_params );
+		return $reflector->newInstanceArgs( $resolved );
 	}
 
 
