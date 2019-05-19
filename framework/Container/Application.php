@@ -30,7 +30,6 @@ class Application extends Container {
 		}
 
 		$this->register_base_bindings();
-		$this->register_base_providers();
 	}
 
 
@@ -49,11 +48,6 @@ class Application extends Container {
 		self::$_instance = $this;
 		$this->singleton( 'app', $this );
 		$this->singleton( Container::class, $this );
-	}
-
-
-	protected function register_base_providers() {
-		$this->register_provider( new WpCliServiceProvider() );
 	}
 
 
