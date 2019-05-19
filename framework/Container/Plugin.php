@@ -23,4 +23,53 @@ class Plugin extends Application {
 	}
 
 
+	public function init() {
+		add_action( 'plugins_loaded', [ $this, '_on_plugins_loaded' ] );
+		add_action( 'init', [ $this, '_on_init' ] );
+	}
+
+
+	public function _on_plugins_loaded() {
+		$this->register_providers();
+		$this->call_method_on_providers( 'on_plugins_loaded' );
+	}
+
+
+	public function _on_init() {
+		$this->call_method_on_providers( 'on_init' );
+	}
+
+
+	/**
+	 * Register all providers defined in the providers config
+	 *
+	 * @throws \Exception
+	 */
+	protected function register_providers() {
+		// todo - resolve this config from the container
+		$class_names = include trailingslashit( $this->base_dir ) . 'config/providers.php';
+
+		foreach ( $class_names as $class_name ) {
+			if ( class_exists( $class_name ) ) {
+				$this->singleton( $class_name );
+				$this->register_provider( $this->make( $class_name ) );
+			}
+		}
+	}
+
+
+	/**
+	 * Loop through all registered providers and call the defined method if it exists
+	 *
+	 * @param $method
+	 */
+	protected function call_method_on_providers( $method ) {
+		foreach ( $this->registered_providers as $provider ) {
+			if ( method_exists( $provider, $method ) ) {
+				$provider->$method();
+			}
+		}
+	}
+
+
 }

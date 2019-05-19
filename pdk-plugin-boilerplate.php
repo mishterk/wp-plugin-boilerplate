@@ -43,7 +43,7 @@ if ( false === version_compare( PHP_VERSION, PDK_PLUGIN_BOILERPLATE_MIN_PHP_VERS
 
 	// Load the plugin
 	$plugin = new \PdkPluginBoilerplate\Framework\Container\Plugin( PDK_PLUGIN_BOILERPLATE_PLUGIN_DIR, PDK_PLUGIN_BOILERPLATE_PLUGIN_URL );
-	$plugin->register_provider( new \PdkPluginBoilerplate\Providers\AjaxServiceProvider() );
+	$plugin->init();
 
 	\PdkPluginBoilerplate\View\View::init();
 
