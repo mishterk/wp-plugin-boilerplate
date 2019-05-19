@@ -5,7 +5,6 @@ namespace PdkPluginBoilerplate\Providers;
 
 
 use PdkPluginBoilerplate\Ajax\ExampleOne;
-use PdkPluginBoilerplate\Ajax\ExampleThreeXYZ;
 use PdkPluginBoilerplate\Ajax\ExampleTwo;
 use PdkPluginBoilerplate\Framework\Container\Application;
 use PdkPluginBoilerplate\Framework\Providers\ServiceProviderBase;
