@@ -116,7 +116,7 @@ class Container implements \ArrayAccess {
 	 * @param $key
 	 * @param $concrete
 	 */
-	public function singleton( $key, $concrete ) {
+	public function singleton( $key, $concrete = null ) {
 		$this->singletons[ $key ] = true;
 		$this->bind( $key, $concrete );
 	}
@@ -126,7 +126,7 @@ class Container implements \ArrayAccess {
 	 * @param $key
 	 * @param $concrete
 	 */
-	public function protected( $key, $concrete ) {
+	public function protected( $key, $concrete = null ) {
 		$this->protected[ $key ] = true;
 		$this->bind( $key, $concrete );
 	}
@@ -136,7 +136,7 @@ class Container implements \ArrayAccess {
 	 * @param $key
 	 * @param $concrete
 	 */
-	public function factory( $key, $concrete ) {
+	public function factory( $key, $concrete = null ) {
 		$this->factories[ $key ] = true;
 
 		$this->bind( $key, function () use ( $key, $concrete ) {
