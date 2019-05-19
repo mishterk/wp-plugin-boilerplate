@@ -21,7 +21,7 @@ class Application extends Container {
 	/**
 	 * @var ServiceProviderBase[]
 	 */
-	protected $providers = [];
+	protected $registered_providers = [];
 
 
 	public function __construct( $base_path = null ) {
@@ -40,7 +40,7 @@ class Application extends Container {
 
 	public function register_provider( ServiceProviderBase $provider ) {
 		$provider->register( $this );
-		$this->providers[ get_class( $provider ) ] = $provider;
+		$this->registered_providers[ get_class( $provider ) ] = $provider;
 	}
 
 
