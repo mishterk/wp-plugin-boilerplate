@@ -55,9 +55,14 @@ class Application extends Container {
 		$this->singleton( 'path.config', "$base_path/config" );
 	}
 
-
+	
 	protected function register_base_providers() {
 		$this->register_provider( new ConfigServiceProvider() );
+	}
+
+
+	protected function boot_base_providers() {
+		$this->registered_providers[ ConfigServiceProvider::class ]->load_configuration_files();
 	}
 
 

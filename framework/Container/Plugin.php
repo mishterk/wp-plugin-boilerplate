@@ -4,9 +4,6 @@
 namespace PdkPluginBoilerplate\Framework\Container;
 
 
-use PdkPluginBoilerplate\Framework\Providers\ConfigServiceProvider;
-
-
 class Plugin extends Application {
 
 
@@ -34,7 +31,7 @@ class Plugin extends Application {
 	 * on init.
 	 */
 	public function _on_plugins_loaded_first() {
-		$this->registered_providers[ ConfigServiceProvider::class ]->load_configuration_files();
+		$this->boot_base_providers();
 	}
 
 
