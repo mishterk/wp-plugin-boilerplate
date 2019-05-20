@@ -19,6 +19,9 @@ class Plugin extends Application {
 		$this->base_dir = $base_dir;
 		$this->base_url = $base_url;
 
+		$this->bind( 'base_dir', $base_dir );
+		$this->bind( 'base_url', $base_url );
+
 		parent::__construct( $base_dir );
 	}
 
