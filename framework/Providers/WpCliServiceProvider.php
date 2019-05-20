@@ -28,8 +28,8 @@ class WpCliServiceProvider extends ServiceProviderBase {
 			return;
 		}
 
-		$this->app->singleton( 'command.ajax.make', MakeAjaxCommand::class );
-		$this->app->singleton( 'command.provider.make', MakeProviderCommand::class );
+		$this->app->singleton( MakeAjaxCommand::class );
+		$this->app->singleton( MakeProviderCommand::class );
 	}
 
 
@@ -38,8 +38,8 @@ class WpCliServiceProvider extends ServiceProviderBase {
 			return;
 		}
 
-		$this->app->make( 'command.ajax.make' )->init();
-		$this->app->make( 'command.provider.make' )->init();
+		$this->app->make( MakeAjaxCommand::class )->init();
+		$this->app->make( MakeProviderCommand::class )->init();
 	}
 
 
