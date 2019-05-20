@@ -32,6 +32,11 @@ class Application extends Container {
 	}
 
 
+	/**
+	 * Register a service provider with the container.
+	 *
+	 * @param ServiceProviderBase $provider
+	 */
 	public function register_provider( ServiceProviderBase $provider ) {
 		$provider->register( $this );
 		$this->registered_providers[ get_class( $provider ) ] = $provider;
@@ -45,17 +50,27 @@ class Application extends Container {
 	}
 
 
+	/**
+	 * @throws \Exception
+	 */
 	protected function register_directory_bindings() {
 		$base_path = $this->make( 'path.base' );
 		$this->singleton( 'path.config', "$base_path/config" );
 	}
 
-	
+
+	/**
+	 * Register any core, non-optional service providers that need to be registered early.
+	 */
 	protected function register_base_providers() {
 		$this->register_provider( new ConfigServiceProvider() );
 	}
 
 
+	/**
+	 * Boot any service provider initialisation that needs to be in place before other service providers
+	 * are registered.
+	 */
 	protected function boot_base_providers() {
 		$this->registered_providers[ ConfigServiceProvider::class ]->load_configuration_files();
 	}
