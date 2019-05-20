@@ -55,7 +55,7 @@ abstract class AjaxBase {
 	 *                      the priv handler won't be hooked and this AJAX action will not handle requests made by
 	 *                      authenticated users.
 	 */
-	protected $priv_handler_method_name = 'handle_authenticated_requests';
+	protected $priv_handler_method_name = 'priv';
 
 
 	/**
@@ -64,7 +64,7 @@ abstract class AjaxBase {
 	 *                      FALSE, NULL, … – the priv handler won't be hooked and this AJAX action will not handle
 	 *                      requests made by non-authenticated users.
 	 */
-	protected $nopriv_handler_method_name = 'handle_non_authenticated_requests';
+	protected $nopriv_handler_method_name = 'nopriv';
 
 
 	/**
@@ -205,12 +205,12 @@ abstract class AjaxBase {
 	}
 
 
-	protected function handle_authenticated_requests() {
+	protected function priv() {
 		wp_die( 'No endpoint handler defined for this action and context.', '', [ 'response' => 400 ] );
 	}
 
 
-	protected function handle_non_authenticated_requests() {
+	protected function nopriv() {
 		wp_die( 'No endpoint handler defined for this action and context.', '', [ 'response' => 400 ] );
 	}
 
