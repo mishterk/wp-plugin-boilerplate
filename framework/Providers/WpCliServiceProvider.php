@@ -22,45 +22,29 @@ class WpCliServiceProvider extends ServiceProviderBase {
 	 * @param Application $app
 	 */
 	public function register( Application $app ) {
+		$this->app = $app;
+
 		if ( ! $this->is_running_wpcli() ) {
 			return;
 		}
 
-		$this->app = $app;
+		$this->app->singleton( 'command.ajax.make', MakeAjaxCommand::class );
+		$this->app->singleton( 'command.provider.make', MakeProviderCommand::class );
+	}
 
-		$this->registerMakeAjaxCommand();
-		$this->registerMakeProviderCommand();
+
+	public function plugins_loaded() {
+		if ( ! $this->is_running_wpcli() ) {
+			return;
+		}
+
+		$this->app->make( 'command.ajax.make' )->init();
+		$this->app->make( 'command.provider.make' )->init();
 	}
 
 
 	protected function is_running_wpcli() {
 		return defined( 'WP_CLI' ) and WP_CLI;
-	}
-
-
-	protected function registerMakeAjaxCommand() {
-		$this->app->singleton( 'command.ajax.make', function ( $app ) {
-
-			$command = new MakeAjaxCommand();
-			$command->init();
-
-			return $command;
-		} );
-
-		$this->app->make( 'command.ajax.make' );
-	}
-
-
-	protected function registerMakeProviderCommand() {
-		$this->app->singleton( 'command.provider.make', function ( $app ) {
-
-			$command = new MakeProviderCommand();
-			$command->init();
-
-			return $command;
-		} );
-
-		$this->app->make( 'command.provider.make' );
 	}
 
 
