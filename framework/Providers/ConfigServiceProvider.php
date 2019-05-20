@@ -6,7 +6,6 @@ namespace PdkPluginBoilerplate\Framework\Providers;
 
 use PdkPluginBoilerplate\Framework\Container\Application;
 use PdkPluginBoilerplate\Framework\Utils\Config;
-use WPValetBoilerplate\Debug;
 
 
 class ConfigServiceProvider extends ServiceProviderBase {
@@ -51,8 +50,6 @@ class ConfigServiceProvider extends ServiceProviderBase {
 		}
 
 		closedir( $resource );
-
-		Debug::log( $config->all() );
 	}
 
 
