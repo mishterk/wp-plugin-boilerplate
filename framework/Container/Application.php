@@ -55,7 +55,13 @@ class Application extends Container {
 	 */
 	protected function register_directory_bindings() {
 		$base_path = $this->make( 'path.base' );
+
+		$this->singleton( 'path.app', "$base_path/app" );
 		$this->singleton( 'path.config', "$base_path/config" );
+		$this->singleton( 'path.assets', "$base_path/assets" );
+		$this->singleton( 'path.framework', "$base_path/framework" );
+		$this->singleton( 'path.templates', "$base_path/templates" );
+		$this->singleton( 'path.tests', "$base_path/tests" );
 	}
 
 
