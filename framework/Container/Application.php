@@ -23,17 +23,12 @@ class Application extends Container {
 
 	public function __construct( $base_path = null ) {
 		if ( $base_path ) {
-			$this->set_base_path( $base_path );
+			$this->bind( 'path.base', rtrim( $base_path, '\/' ) );
 		}
 
 		$this->register_base_bindings();
 		$this->register_directory_bindings();
 		$this->register_base_providers();
-	}
-
-
-	public function set_base_path( $path ) {
-		$this->bind( 'path.base', rtrim( $path, '\/' ) );
 	}
 
 
