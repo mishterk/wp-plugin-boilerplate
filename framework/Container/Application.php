@@ -45,8 +45,9 @@ class Application extends Container {
 
 	protected function register_base_bindings() {
 		self::$_instance = $this;
-		$this->singleton( 'app', $this );
-		$this->singleton( Container::class, $this );
+		$this->instance( 'app', $this );
+		$this->instance( Container::class, $this );
+		$this->instance( Application::class, $this );
 	}
 
 
