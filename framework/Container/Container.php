@@ -94,6 +94,18 @@ class Container implements \ArrayAccess {
 
 
 	/**
+	 * Binds an instance directly into the container. This instance will not be subject to resolution.
+	 *
+	 * @param $key
+	 * @param $instance
+	 */
+	public function instance( $key, $instance ) {
+		$this->resolved[ $key ] = true;
+		$this->cache_instance( $key, $instance );
+	}
+
+
+	/**
 	 * @param $key
 	 *
 	 * @return mixed
