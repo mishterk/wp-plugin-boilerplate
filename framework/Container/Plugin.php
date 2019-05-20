@@ -59,35 +59,4 @@ class Plugin extends Application {
 	}
 
 
-	/**
-	 * Register all providers defined in the providers config
-	 *
-	 * @throws \Exception
-	 */
-	protected function register_providers() {
-		$class_names = $this['config']->get( 'providers', [] );
-
-		foreach ( $class_names as $class_name ) {
-			if ( class_exists( $class_name ) ) {
-				$this->singleton( $class_name );
-				$this->register_provider( $this->make( $class_name ) );
-			}
-		}
-	}
-
-
-	/**
-	 * Loop through all registered providers and call the defined method if it exists
-	 *
-	 * @param $method
-	 */
-	protected function call_method_on_providers( $method ) {
-		foreach ( $this->registered_providers as $provider ) {
-			if ( method_exists( $provider, $method ) ) {
-				$provider->$method();
-			}
-		}
-	}
-
-
 }
