@@ -383,7 +383,7 @@ class Container implements \ArrayAccess {
 		foreach ( $args as $arg ) {
 
 			if ( $class = $arg->getClass() ) {
-				$resolved[] = $this->build( $class->getName() );
+				$resolved[] = $this->make( $class->getName() );
 
 			} else {
 				if ( $arg instanceof Closure ) {
