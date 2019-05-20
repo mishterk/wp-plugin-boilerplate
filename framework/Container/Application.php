@@ -15,9 +15,6 @@ class Application extends Container {
 	use Singleton;
 
 
-	protected $base_path;
-
-
 	/**
 	 * @var ServiceProviderBase[]
 	 */
@@ -30,12 +27,13 @@ class Application extends Container {
 		}
 
 		$this->register_base_bindings();
+		$this->register_directory_bindings();
 		$this->register_base_providers();
 	}
 
 
 	public function set_base_path( $path ) {
-		$this->base_path = rtrim( $path, '\/' );
+		$this->bind( 'path.base', rtrim( $path, '\/' ) );
 	}
 
 
@@ -52,8 +50,13 @@ class Application extends Container {
 	}
 
 
+	protected function register_directory_bindings() {
+		$base_path = $this->make( 'path.base' );
+		$this->singleton( 'path.config', "$base_path/config" );
+	}
+
+
 	protected function register_base_providers() {
-		// todo - figure out how/where best to register config base provider
 		$this->register_provider( new ConfigServiceProvider() );
 	}
 

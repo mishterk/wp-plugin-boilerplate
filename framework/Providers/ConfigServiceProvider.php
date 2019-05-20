@@ -23,6 +23,7 @@ class ConfigServiceProvider extends ServiceProviderBase {
 	 * @param Application $app
 	 *
 	 * @return void
+	 * @throws \Exception
 	 */
 	public function register( Application $app ) {
 		$this->app = $app;
@@ -30,12 +31,21 @@ class ConfigServiceProvider extends ServiceProviderBase {
 	}
 
 
-	public function plugins_loaded() {
+	/**
+	 * Load config from all configuration files in config directory
+	 *
+	 * @throws \Exception
+	 */
+	public function load_configuration_files() {
 		/** @var Config $config */
 		$config     = $this->app->make( 'config' );
-		$config_dir = trailingslashit( $this->app->make( 'base_dir' ) ) . 'config';
+		$config_dir = $this->app->make( 'path.config' );
 
-		$resource = opendir( $config_dir );
+		$resource = @opendir( $config_dir );
+
+		if ( $resource === false ) {
+			return;
+		}
 
 		while ( ( $file = readdir( $resource ) ) !== false ) {
 			$file_path = "$config_dir/$file";
