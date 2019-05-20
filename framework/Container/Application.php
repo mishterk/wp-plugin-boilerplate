@@ -4,7 +4,7 @@
 namespace PdkPluginBoilerplate\Framework\Container;
 
 
-use PdkPluginBoilerplate\Framework\Providers\WpCliServiceProvider;
+use PdkPluginBoilerplate\Framework\Providers\ConfigServiceProvider;
 use PdkPluginBoilerplate\Framework\Providers\ServiceProviderBase;
 use PdkPluginBoilerplate\Framework\Traits\Singleton;
 
@@ -30,6 +30,7 @@ class Application extends Container {
 		}
 
 		$this->register_base_bindings();
+		$this->register_base_providers();
 	}
 
 
@@ -48,6 +49,12 @@ class Application extends Container {
 		self::$_instance = $this;
 		$this->singleton( 'app', $this );
 		$this->singleton( Container::class, $this );
+	}
+
+
+	protected function register_base_providers() {
+		// todo - figure out how/where best to register config base provider
+		$this->register_provider( new ConfigServiceProvider() );
 	}
 
 

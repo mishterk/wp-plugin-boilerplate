@@ -46,8 +46,7 @@ class Plugin extends Application {
 	 * @throws \Exception
 	 */
 	protected function register_providers() {
-		// todo - resolve this config from the container
-		$class_names = include trailingslashit( $this->base_dir ) . 'config/providers.php';
+		$class_names = $this->make( 'config' )->get( 'providers', [] );
 
 		foreach ( $class_names as $class_name ) {
 			if ( class_exists( $class_name ) ) {
