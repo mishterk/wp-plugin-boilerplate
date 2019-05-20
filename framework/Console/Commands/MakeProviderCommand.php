@@ -29,7 +29,7 @@ class MakeProviderCommand extends GeneratorCommandBase {
 	 * @throws WP_CLI\ExitException
 	 */
 	public function __invoke( $args ) {
-		$target_dir  = $this->get_target_dir();
+		$target_dir  = $this->get_target_dir( '/Providers' );
 		$class_name  = $args[0];
 		$destination = "$target_dir/$class_name.php";
 
@@ -45,7 +45,7 @@ class MakeProviderCommand extends GeneratorCommandBase {
 				'namespace PdkPluginBoilerplate\App\Providers',
 				$class_name,
 			],
-			file_get_contents( $this->get_stub() )
+			file_get_contents( $this->get_stub( 'provider.stub' ) )
 		);
 
 		$created = ( false !== file_put_contents( $destination, $stub ) );
@@ -55,18 +55,6 @@ class MakeProviderCommand extends GeneratorCommandBase {
 		} else {
 			WP_CLI::error( "Failed to create $class_name class." );
 		}
-	}
-
-
-	// todo - need a better way to get the path
-	private function get_target_dir() {
-		return dirname( dirname( dirname( __DIR__ ) ) ) . '/app/Providers';
-	}
-
-
-	// todo - need a better way to get the path
-	private function get_stub() {
-		return dirname( __DIR__ ) . '/stubs/provider.stub';
 	}
 
 
