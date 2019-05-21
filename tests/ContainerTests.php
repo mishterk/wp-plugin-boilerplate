@@ -150,6 +150,17 @@ class ContainerTests extends WP_UnitTestCase {
 	}
 
 
+	public function test_factory_method_can_bind_anonymous_functions() {
+		$container = new Container();
+		$container->factory( 'test.func', function () {
+			return random_int( 1111, 9999 );
+		} );
+
+		$this->assertTrue( is_int( $container->make( 'test.func' ) ) );
+		$this->assertNotSame( $container->make( 'test.func' ), $container->make( 'test.func' ) );
+	}
+
+
 	public function test_extend_method_extends_an_existing_binding() {
 		$container = new Container();
 		$container->bind( 'test.extend', function () {
@@ -284,9 +295,6 @@ class ContainerTests extends WP_UnitTestCase {
 
 		$this->assertInstanceOf( RootClass::class, $instance );
 	}
-
-
-	// todo - test we can bind closures as factories
 
 
 	public function test_make_method_builds_a_class_where_class_names_are_bound_to_keys() {
