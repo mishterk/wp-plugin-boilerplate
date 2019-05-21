@@ -72,6 +72,15 @@ class Container implements \ArrayAccess {
 
 
 	/**
+	 * An array of key/value pairs mapping aliases to bound class names
+	 * e.g; [ 'alias_1' => Some\ClassName ]
+	 *
+	 * @var array
+	 */
+	protected $aliases = [];
+
+
+	/**
 	 * @param string $key
 	 * @param mixed $concrete
 	 * @param bool $shared
@@ -83,6 +92,9 @@ class Container implements \ArrayAccess {
 
 		if ( $concrete === null ) {
 			$concrete = $key;
+
+		} elseif ( $this->is_abstract_key_and_concrete_class( $key, $concrete ) ) {
+			$this->alias( $key, $concrete );
 		}
 
 		if ( $shared ) {
@@ -112,6 +124,8 @@ class Container implements \ArrayAccess {
 	 * @throws Exception
 	 */
 	public function make( $key ) {
+		$key = $this->get_alias( $key );
+
 		$resolved = $this->resolve( $key );
 
 		if ( $this->is_singleton( $key ) ) {
@@ -177,6 +191,29 @@ class Container implements \ArrayAccess {
 		};
 
 		$this->bind( $key, $extended );
+	}
+
+
+	/**
+	 * Add an alias for a given binding
+	 *
+	 * @param $key
+	 * @param $alias
+	 */
+	public function alias( $key, $alias ) {
+		$this->aliases[ $alias ] = $key;
+	}
+
+
+	/**
+	 * Get an aliased key if it exists
+	 *
+	 * @param $key
+	 *
+	 * @return mixed
+	 */
+	public function get_alias( $key ) {
+		return $this->aliases[ $key ] ?? $key;
 	}
 
 
@@ -270,6 +307,20 @@ class Container implements \ArrayAccess {
 	 */
 	public function offsetUnset( $offset ) {
 		$this->unbind( $offset );
+	}
+
+
+	/**
+	 * Checks to see if a concrete class name is being bound to an abstract key.
+	 *
+	 * @param $key
+	 * @param $concrete
+	 *
+	 * @return bool
+	 */
+	protected function is_abstract_key_and_concrete_class( $key, $concrete ) {
+		return ( is_string( $key ) and ! class_exists( $key ) ) and
+		       ( is_string( $concrete ) and class_exists( $concrete ) );
 	}
 
 

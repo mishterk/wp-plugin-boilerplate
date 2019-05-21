@@ -11,6 +11,7 @@ use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\DependencyOne;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\DependencyThree;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\DependencyTwo;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\RootClass;
+use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\RootClassAlt;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\RootClassSimple;
 use PdkPluginBoilerplate\Tests\Mocks\ServiceProvider;
 use ReflectionClass;
@@ -258,6 +259,36 @@ class ContainerTests extends WP_UnitTestCase {
 	}
 
 
+	public function test_make_method_builds_a_class_where_class_names_are_bound_to_aliases() {
+		$container = new Container();
+
+		$container->bind( RootClass::class );
+		$container->alias( RootClass::class, 'test.root' );
+
+		$container->bind( DependencyOne::class );
+		$container->alias( DependencyOne::class, 'test.dep.1' );
+
+		$container->bind( DependencyTwo::class );
+		$container->alias( DependencyTwo::class, 'test.dep.2' );
+
+		$container->bind( DependencyThree::class );
+		$container->alias( DependencyThree::class, 'test.dep.3' );
+
+		$container->bind( DependencyFour::class );
+		$container->alias( DependencyFour::class, 'test.dep.4' );
+
+		// todo - support this syntax
+		//$container->bind( DependencyFour::class )->alias( 'test.dep.4' );
+
+		$instance = $container->make( 'test.root' );
+
+		$this->assertInstanceOf( RootClass::class, $instance );
+	}
+
+
+	// todo - test we can bind closures as factories
+
+
 	public function test_make_method_builds_a_class_where_class_names_are_bound_to_keys() {
 		$container = new Container();
 
@@ -271,6 +302,32 @@ class ContainerTests extends WP_UnitTestCase {
 
 		$this->assertInstanceOf( RootClass::class, $instance );
 	}
+
+
+	public function test_make_method_builds_all_dependencies() {
+		$container = new Container();
+
+		$container->bind( 'test.root', RootClass::class );
+		$container->bind( 'test.root.2', RootClassAlt::class );
+		$container->bind( 'test.dep.1', DependencyOne::class );
+		$container->bind( 'test.dep.2', DependencyTwo::class );
+		$container->bind( 'test.dep.3', DependencyThree::class );
+		$container->bind( 'test.dep.4', DependencyFour::class );
+
+		$instance = $container->make( 'test.root' );
+
+		// check dependencies are all set
+		$this->assertTrue( isset( $instance->one->two->three->four ) );
+		$this->assertTrue( isset( $instance->two->three->four ) );
+
+		// check to make sure we are getting the same objects
+		$this->assertSame( $instance->one, $container->make( 'test.dep.1' ) );
+		$this->assertSame( $instance->one->two, $instance->two );
+		$this->assertSame( $instance->one, $container->make( 'test.root.2' )->one );
+	}
+
+
+	// todo - test aliasing concretes to contracts
 
 
 }
