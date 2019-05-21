@@ -10,7 +10,7 @@ class DependencyOne {
 	/**
 	 * @var DependencyTwo
 	 */
-	private $two;
+	public $two;
 
 
 	/**

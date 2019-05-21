@@ -10,19 +10,19 @@ class DependencyThree {
 	/**
 	 * @var DependencyFour
 	 */
-	private $four;
+	public $four;
 
 
 	/**
 	 * @var string
 	 */
-	private $value;
+	public $value;
 
 
 	/**
 	 * @var bool
 	 */
-	private $value2;
+	public $value2;
 
 
 	/**

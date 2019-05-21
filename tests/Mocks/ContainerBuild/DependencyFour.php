@@ -10,7 +10,7 @@ class DependencyFour {
 	/**
 	 * @var null
 	 */
-	private $value;
+	public $value;
 
 
 	/**

@@ -10,13 +10,13 @@ class DependencyTwo {
 	/**
 	 * @var DependencyThree
 	 */
-	private $three;
+	public $three;
 
 
 	/**
 	 * @var int
 	 */
-	private $value;
+	public $value;
 
 
 	/**

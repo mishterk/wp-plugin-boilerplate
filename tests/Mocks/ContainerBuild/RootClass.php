@@ -10,13 +10,13 @@ class RootClass {
 	/**
 	 * @var DependencyOne
 	 */
-	private $one;
+	public $one;
 
 
 	/**
 	 * @var DependencyTwo
 	 */
-	private $two;
+	public $two;
 
 
 	/**
