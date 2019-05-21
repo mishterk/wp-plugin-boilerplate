@@ -6,13 +6,13 @@ namespace PdkPluginBoilerplate\Framework\Container;
 
 use PdkPluginBoilerplate\Framework\Providers\ConfigServiceProvider;
 use PdkPluginBoilerplate\Framework\Providers\ServiceProviderBase;
-use PdkPluginBoilerplate\Framework\Traits\Singleton;
+use PdkPluginBoilerplate\Framework\Traits\StaticInstance;
 
 
 class Application extends Container {
 
 
-	use Singleton;
+	use StaticInstance;
 
 
 	/**
@@ -25,6 +25,8 @@ class Application extends Container {
 		if ( $base_path ) {
 			$this->bind( 'path.base', rtrim( $base_path, '\/' ) );
 		}
+
+		self::set_instance( $this );
 
 		$this->register_base_bindings();
 		$this->register_directory_bindings();
@@ -44,7 +46,6 @@ class Application extends Container {
 
 
 	protected function register_base_bindings() {
-		self::$_instance = $this;
 		$this->instance( 'app', $this );
 		$this->instance( Container::class, $this );
 		$this->instance( Application::class, $this );

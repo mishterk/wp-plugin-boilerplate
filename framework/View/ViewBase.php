@@ -4,7 +4,7 @@
 namespace PdkPluginBoilerplate\Framework\View;
 
 
-use PdkPluginBoilerplate\Framework\Traits\Singleton;
+use PdkPluginBoilerplate\Framework\Traits\StaticInstance;
 
 
 /**
@@ -18,7 +18,7 @@ use PdkPluginBoilerplate\Framework\Traits\Singleton;
 abstract class ViewBase extends ViewRenderer {
 
 
-	use Singleton;
+	use StaticInstance;
 
 
 	abstract protected function setup();
