@@ -28,11 +28,37 @@ $container->bind( 'my_key', 'some value' );
 $value = $container->make('my_key');
 ```
 
+#### Protecting bindings
+
+Sometimes you might not want your key to be re-bound. You can use the `protected` method to prevent this:
+
+```php
+<?php
+$container = new \PdkPluginBoilerplate\Framework\Container\Container();
+$container->protected( 'some_key', ClassName::class );
+
+// this will throw an exception
+$container->protected( 'some_key', AnotherClassName::class );
+```
+
+#### Binding singletons
+
+```php
+<?php
+$container = new \PdkPluginBoilerplate\Framework\Container\Container();
+$container->factory( ClassName::class );
+
+$instance_1 = $container->make( ClassName::class );
+$instance_2 = $container->make( ClassName::class );
+
+// $instance_1 === $instance_2 – same instance is returned on each call to make()
+```
+
 #### Binding factories
 
 Factories can be used to generate new instances of objects/data each time you call the `$container->make()` method. e.g;
 
-##### Binding a lambda function
+**Binding a lambda function**
 
 ```php
 <?php
@@ -49,7 +75,7 @@ $instance_2 = $container->make('my_key');
 
 In the above example, the lambda is called each time the `make` method is invoked for that particular key.
 
-##### Binding a class
+**Binding a class**
 
 ```php
 <?php
@@ -75,6 +101,14 @@ $instance_2 = $container->make( ClassName::class );
 
 // $instance_1 !== $instance_2
 ```
+
+TODO: DOCUMENT...
+
+- extend() method
+- instance() method
+- alias() method
+- Usage via service container
+- Binding using closures
 
 ## View System
 
