@@ -161,18 +161,27 @@ class ContainerTests extends WP_UnitTestCase {
 	}
 
 
-	public function test_factory_method_can_bind_a_class_name() {
+	public function test_factory_method_can_bind_a_callable_class_by_class_name() {
 		$container = new Container();
-
 		$container->factory( Factory::class );
 
 		$this->assertTrue( is_int( $container->make( Factory::class ) ) );
 	}
 
 
+	public function test_factory_method_returns_unique_instances_when_a_classname_is_bound() {
+		$container = new Container();
+		$container->factory( RootClassSimple::class );
+
+		$this->assertNotSame(
+			$container->make( RootClassSimple::class ),
+			$container->make( RootClassSimple::class )
+		);
+	}
+
+
 	public function test_factory_method_can_be_aliased() {
 		$container = new Container();
-
 		$container->factory( 'test.factory', function () {
 			return random_int( 111, 999 );
 		} )->alias( 'test.factory.alias' );
