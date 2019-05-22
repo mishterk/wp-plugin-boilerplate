@@ -12,7 +12,8 @@ use PdkPluginBoilerplate\Framework\Traits\NonceCreationAndVerification;
  * Class AjaxBase
  * @package PdkPluginBoilerplate\Framework\Ajax
  *
- * A base class for convenient creation of AJAX handlers. Extend this class TODO - finish this
+ * A base class for convenient creation of AJAX handlers. Extend this class to create your own AJAX handler and
+ * initialise appropriately.
  */
 abstract class AjaxBase {
 
@@ -65,6 +66,16 @@ abstract class AjaxBase {
 	 *                      requests made by non-authenticated users.
 	 */
 	protected $nopriv_handler_method_name = 'nopriv';
+
+
+	/**
+	 * Offers control over how the class name is converted to an identifier.
+	 *
+	 * @see \PdkPluginBoilerplate\Framework\Traits\ClassNameAsIdentifier for more information.
+	 *
+	 * @var bool
+	 */
+	protected $class_name_has_consecutive_ucase_chars = false;
 
 
 	/**
