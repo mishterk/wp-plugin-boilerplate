@@ -14,12 +14,10 @@ class DummyClass extends ServiceProviderBase {
 	/**
 	 * Register container bindings. Avoid initialising anything here as it is better to wait for the container to
 	 * receive all bindings before doing so.
-	 *
-     * @param Application $app
      */
-    public function register( Application $app ) {
+    public function register() {
 
-        //$app->bind('key', function( $app ){
+        //$this->app->bind('key', function( $app ){
         //    return new SomeClass($app->make('some_dependency'));
         //});
 
