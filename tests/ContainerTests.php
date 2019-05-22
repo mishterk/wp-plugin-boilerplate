@@ -14,7 +14,6 @@ use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\RootClass;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\RootClassAlt;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\RootClassSimple;
 use PdkPluginBoilerplate\Tests\Mocks\Factory;
-use PdkPluginBoilerplate\Tests\Mocks\ServiceProvider;
 use ReflectionClass;
 use RuntimeException;
 use stdClass;
