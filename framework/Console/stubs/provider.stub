@@ -12,6 +12,9 @@ class DummyClass extends ServiceProviderBase {
 
 
 	/**
+	 * Register container bindings. Avoid initialising anything here as it is better to wait for the container to
+	 * receive all bindings before doing so.
+	 *
      * @param Application $app
      */
     public function register( Application $app ) {
@@ -21,6 +24,32 @@ class DummyClass extends ServiceProviderBase {
         //});
 
     }
+
+
+    /**
+     * Run any early boot code here.
+     *
+     * If your application is extending the \PdkPluginBoilerplate\Framework\Container\Plugin class, this method is
+     * called on WordPress' `plugins_loaded` action.
+     *
+     * If your application is extending the \PdkPluginBoilerplate\Framework\Container\Theme class, this method is
+     * called on WordPress' `after_setup_theme` action.
+     */
+    //public function boot() {
+    //
+    //    //$this->app->make( 'key' )->init();
+    //
+    //}
+
+
+    /**
+     * Run any initialisation code here. This method is called on WordPress' `init` action.
+     */
+    //public function init() {
+    //
+    //    //$this->app->make( 'key' )->init();
+    //
+    //}
 
 
 }
