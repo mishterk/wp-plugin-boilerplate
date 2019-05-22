@@ -6,13 +6,16 @@ namespace PdkPluginBoilerplate\Tests;
 
 use InvalidArgumentException;
 use PdkPluginBoilerplate\Framework\Container\Container;
+use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\Contract;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\DependencyFour;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\DependencyOne;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\DependencyThree;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\DependencyTwo;
+use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\ImplementsContract;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\RootClass;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\RootClassAlt;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\RootClassSimple;
+use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\RootClassWithContractAsDependency;
 use PdkPluginBoilerplate\Tests\Mocks\Factory;
 use ReflectionClass;
 use RuntimeException;
@@ -98,6 +101,31 @@ class ContainerTests extends WP_UnitTestCase {
 		$container = new Container();
 		$this->expectException( InvalidArgumentException::class );
 		$container->make( 'test.nonexistent' );
+	}
+
+
+	public function test_make_method_returns_concrete_implementation_of_contract() {
+		$container = new Container();
+		$container->bind( ImplementsContract::class );
+		$container->alias( ImplementsContract::class, Contract::class );
+
+		// test with fluent alias setter
+		$container2 = new Container();
+		$container2->bind( ImplementsContract::class )->alias( Contract::class );
+
+		$this->assertInstanceOf( ImplementsContract::class, $container->make( Contract::class ) );
+		$this->assertInstanceOf( ImplementsContract::class, $container2->make( Contract::class ) );
+	}
+
+
+	public function test_make_method_resolves_dependencies_when_a_contract_is_type_hinted() {
+		$container = new Container();
+		$container->bind( RootClassWithContractAsDependency::class );
+		$container->bind( ImplementsContract::class )->alias( Contract::class );
+		$resolved = $container->make( RootClassWithContractAsDependency::class );
+
+		$this->assertInstanceOf( RootClassWithContractAsDependency::class, $resolved );
+		$this->assertInstanceOf( ImplementsContract::class, $resolved->one );
 	}
 
 
@@ -378,9 +406,6 @@ class ContainerTests extends WP_UnitTestCase {
 		$this->assertSame( $instance->one->two, $instance->two );
 		$this->assertSame( $instance->one, $container->make( 'test.root.2' )->one );
 	}
-
-
-	// todo - test aliasing concretes to contracts
 
 
 }
