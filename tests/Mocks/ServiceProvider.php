@@ -16,24 +16,12 @@ class ServiceProvider extends ServiceProviderBase {
 
 
 	/**
-	 * @param $test_key
-	 * @param $test_binding
-	 */
-	public function __construct( $test_key, $test_binding ) {
-		$this->test_key     = $test_key;
-		$this->test_binding = $test_binding;
-	}
-
-
-	/**
 	 * Register this service provider.
-	 *
-	 * @param Application $app
 	 *
 	 * @return void
 	 */
-	public function register( Application $app ) {
-		$app->bind( $this->test_key, $this->test_binding );
+	public function register() {
+		$this->app->bind( $this->test_key, $this->test_binding );
 	}
 
 

@@ -11,13 +11,25 @@ abstract class ServiceProviderBase {
 
 
 	/**
-	 * Register this service provider.
-	 *
+	 * @var Application
+	 */
+	protected $app;
+
+
+	/**
 	 * @param Application $app
+	 */
+	public function __construct( Application $app ) {
+		$this->app = $app;
+	}
+
+
+	/**
+	 * Register this service provider.
 	 *
 	 * @return void
 	 */
-	abstract public function register( Application $app );
+	abstract public function register();
 
 
 }

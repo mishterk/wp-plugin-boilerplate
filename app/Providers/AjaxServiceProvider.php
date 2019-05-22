@@ -4,27 +4,13 @@
 namespace PdkPluginBoilerplate\Providers;
 
 
-use PdkPluginBoilerplate\Ajax\ExampleOne;
-use PdkPluginBoilerplate\Ajax\ExampleTwo;
-use PdkPluginBoilerplate\Framework\Container\Application;
 use PdkPluginBoilerplate\Framework\Providers\ServiceProviderBase;
 
 
 class AjaxServiceProvider extends ServiceProviderBase {
 
 
-	/**
-	 * @var Application
-	 */
-	protected $app;
-
-
-	/**
-	 * @param Application $app
-	 */
-	public function register( Application $app ) {
-		$this->app = $app;
-
+	public function register() {
 		/*
 		// Bind ajax handlers into the container
 		$app->singleton( ExampleOne::class );

@@ -12,22 +12,13 @@ class ConfigServiceProvider extends ServiceProviderBase {
 
 
 	/**
-	 * @var Application
-	 */
-	protected $app;
-
-
-	/**
 	 * Register this service provider.
-	 *
-	 * @param Application $app
 	 *
 	 * @return void
 	 * @throws \Exception
 	 */
-	public function register( Application $app ) {
-		$this->app = $app;
-		$app->singleton( 'config', Config::class );
+	public function register() {
+		$this->app->singleton( 'config', Config::class );
 	}
 
 

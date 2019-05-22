@@ -40,7 +40,7 @@ class Application extends Container {
 	 * @param ServiceProviderBase $provider
 	 */
 	public function register_provider( ServiceProviderBase $provider ) {
-		$provider->register( $this );
+		$provider->register();
 		$this->registered_providers[ get_class( $provider ) ] = $provider;
 	}
 
@@ -71,7 +71,7 @@ class Application extends Container {
 	 * Register any core, non-optional service providers that need to be registered early.
 	 */
 	protected function register_base_providers() {
-		$this->register_provider( new ConfigServiceProvider() );
+		$this->register_provider( new ConfigServiceProvider( $this ) );
 	}
 
 
