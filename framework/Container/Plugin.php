@@ -43,7 +43,7 @@ class Plugin extends Application {
 	 */
 	public function _on_plugins_loaded() {
 		$this->register_providers();
-		$this->call_method_on_providers( 'plugins_loaded' );
+		$this->call_method_on_providers( 'boot' );
 	}
 
 

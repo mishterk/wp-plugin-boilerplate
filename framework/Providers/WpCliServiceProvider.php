@@ -33,7 +33,7 @@ class WpCliServiceProvider extends ServiceProviderBase {
 	}
 
 
-	public function plugins_loaded() {
+	public function boot() {
 		if ( ! $this->is_running_wpcli() ) {
 			return;
 		}
