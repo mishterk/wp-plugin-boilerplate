@@ -8,6 +8,74 @@ reflection API. There system comprises of the following classes:
 1. `Plugin` (extends `Application`)
 1. `Theme` (extends `Application`) **(COMING SOON)**
 
+If building a plugin, you should instantiate or extend the `Plugin` class. 
+
+If building a theme, use the `Theme` class. 
+
+By default, anything bound to the container is considered shared and is treated more or less as a singleton. That is, 
+each time the `$container->make()` method is called for that binding, the same instance is returned. 
+
+### Container Usage Examples
+
+#### Binding simple values
+
+```php
+<?php
+$container = new \PdkPluginBoilerplate\Framework\Container\Container();
+$container->bind( 'my_key', 'some value' );
+
+// to retrieve value
+$value = $container->make('my_key');
+```
+
+#### Binding factories
+
+Factories can be used to generate new instances of objects/data each time you call the `$container->make()` method. e.g;
+
+##### Binding a lambda function
+
+```php
+<?php
+$container = new \PdkPluginBoilerplate\Framework\Container\Container();
+$container->factory('my_key', function(){
+	return random_int(1,9999);
+});
+
+$instance_1 = $container->make('my_key');
+$instance_2 = $container->make('my_key');
+
+// $instance_1 !== $instance_2
+```
+
+In the above example, the lambda is called each time the `make` method is invoked for that particular key.
+
+##### Binding a class
+
+```php
+<?php
+$container = new \PdkPluginBoilerplate\Framework\Container\Container();
+$container->factory('my_key', ClassName::class );
+
+$instance_1 = $container->make('my_key');
+$instance_2 = $container->make('my_key');
+
+// $instance_1 !== $instance_2
+```
+
+In the above example, a new instance of `ClassName` will be returned on each call to `make()`. You could also omit keys
+as follows: 
+
+```php
+<?php
+$container = new \PdkPluginBoilerplate\Framework\Container\Container();
+$container->factory( ClassName::class );
+
+$instance_1 = $container->make( ClassName::class );
+$instance_2 = $container->make( ClassName::class );
+
+// $instance_1 !== $instance_2
+```
+
 ## View System
 
 The ViewRenderer can be used on its own:
