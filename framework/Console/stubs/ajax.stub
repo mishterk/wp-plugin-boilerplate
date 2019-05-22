@@ -10,6 +10,39 @@ use PdkPluginBoilerplate\Framework\Ajax\AjaxBase;
 class DummyClass extends AjaxBase {
 
 
+    // defining the action
+    //protected $action = 'my_action';
+
+
+    // disable nonces
+    //protected $use_nonce = false;
+
+
+    // changing the name of the handler method for handling logged-in users
+    //protected $priv_handler_method_name = 'some_custom_method';
+
+
+    // setting to false will disable non-logged-in user handling
+    //protected $nopriv_handler_method_name = false;
+
+
+    // set to false to disable inline script printing
+    //protected $print_inline_script = false;
+
+
+    // define a custom ID attribute for the inline variable script tag
+    //protected $inline_script_id = 'my_custom_id';
+
+
+    // adding custom vars to script output
+    //protected function get_custom_script_vars() {
+    //	return [
+    //		'some'    => 'var',
+    //		'another' => 'var',
+    //	];
+    //}
+
+
 	protected function priv() {
 		// handle request from logged in users
 		die();
