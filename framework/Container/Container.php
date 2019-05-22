@@ -258,6 +258,7 @@ class Container implements \ArrayAccess {
 			$this->factories[ $key ],
 			$this->protected[ $key ],
 			$this->instances[ $key ],
+			$this->aliases[ $key ],
 			$this->resolved[ $key ]
 		);
 	}
