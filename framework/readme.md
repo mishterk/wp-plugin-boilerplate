@@ -6,7 +6,7 @@ reflection API. There system comprises of the following classes:
 1. `Container`
 1. `Application` (extends `Container`)
 1. `Plugin` (extends `Application`)
-1. `Theme` (extends `Application`) ** COMING SOON **
+1. `Theme` (extends `Application`) **(COMING SOON)**
 
 ## View System
 
