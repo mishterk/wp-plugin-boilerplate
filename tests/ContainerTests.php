@@ -13,6 +13,7 @@ use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\DependencyTwo;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\RootClass;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\RootClassAlt;
 use PdkPluginBoilerplate\Tests\Mocks\ContainerBuild\RootClassSimple;
+use PdkPluginBoilerplate\Tests\Mocks\Factory;
 use PdkPluginBoilerplate\Tests\Mocks\ServiceProvider;
 use ReflectionClass;
 use RuntimeException;
@@ -161,6 +162,27 @@ class ContainerTests extends WP_UnitTestCase {
 	}
 
 
+	public function test_factory_method_can_bind_a_class_name() {
+		$container = new Container();
+
+		$container->factory( Factory::class );
+
+		$this->assertTrue( is_int( $container->make( Factory::class ) ) );
+	}
+
+
+	public function test_factory_method_can_be_aliased() {
+		$container = new Container();
+
+		$container->factory( 'test.factory', function () {
+			return random_int( 111, 999 );
+		} )->alias( 'test.factory.alias' );
+
+		$this->assertTrue( is_int( $container->make( 'test.factory' ) ) );
+		$this->assertTrue( is_int( $container->make( 'test.factory.alias' ) ) );
+	}
+
+
 	public function test_extend_method_extends_an_existing_binding() {
 		$container = new Container();
 		$container->bind( 'test.extend', function () {
@@ -230,7 +252,10 @@ class ContainerTests extends WP_UnitTestCase {
 
 		foreach ( $props as $prop ) {
 			$prop->setAccessible( true );
-			$merged_props = array_merge( $merged_props, $prop->getValue( $container ) );
+			$value = $prop->getValue( $container );
+			if ( is_array( $value ) ) {
+				$merged_props = array_merge( $merged_props, $value );
+			}
 		}
 
 		$this->assertEmpty( $merged_props );
@@ -288,8 +313,20 @@ class ContainerTests extends WP_UnitTestCase {
 		$container->bind( DependencyFour::class );
 		$container->alias( DependencyFour::class, 'test.dep.4' );
 
-		// todo - support this syntax
-		//$container->bind( DependencyFour::class )->alias( 'test.dep.4' );
+		$instance = $container->make( 'test.root' );
+
+		$this->assertInstanceOf( RootClass::class, $instance );
+	}
+
+
+	public function test_fluent_syntax_can_be_used_to_assign_aliases_when_binding() {
+		$container = new Container();
+
+		$container->bind( RootClass::class )->alias( 'test.root' );
+		$container->singleton( DependencyOne::class )->alias( 'test.dep.1' );
+		$container->protected( DependencyTwo::class )->alias( 'test.dep.2' );
+		$container->factory( DependencyThree::class )->alias( 'test.dep.3' );
+		$container->bind( DependencyFour::class )->alias( 'test.dep.4' );
 
 		$instance = $container->make( 'test.root' );
 

@@ -116,31 +116,43 @@ class Container implements \ArrayAccess {
 	/**
 	 * @param $key
 	 * @param $concrete
+	 *
+	 * @return Container
 	 */
 	public function singleton( $key, $concrete = null ) {
 		$this->singletons[ $key ] = true;
-		$this->bind( $key, $concrete );
+
+		return $this->bind( $key, $concrete );
 	}
 
 
 	/**
 	 * @param $key
 	 * @param $concrete
+	 *
+	 * @return Container
 	 */
 	public function protected( $key, $concrete = null ) {
 		$this->protected[ $key ] = true;
-		$this->bind( $key, $concrete );
+
+		return $this->bind( $key, $concrete );
 	}
 
 
 	/**
 	 * @param $key
 	 * @param $concrete
+	 *
+	 * @return Container
 	 */
 	public function factory( $key, $concrete = null ) {
 		$this->factories[ $key ] = true;
 
-		$this->bind( $key, function () use ( $key, $concrete ) {
+		if ( $concrete === null ) {
+			$concrete = $key;
+		}
+
+		return $this->bind( $key, function () use ( $key, $concrete ) {
 			return $concrete;
 		}, false );
 	}
@@ -173,6 +185,8 @@ class Container implements \ArrayAccess {
 	 * @param string $key
 	 * @param mixed $concrete
 	 * @param bool $shared
+	 *
+	 * @return Container
 	 */
 	public function bind( $key, $concrete = null, $shared = true ) {
 		if ( $this->is_protected( $key ) and $this->is_bound( $key ) ) {
@@ -191,7 +205,13 @@ class Container implements \ArrayAccess {
 		}
 
 		$this->bindings[ $key ] = $this->enclose( $concrete );
+
+		$this->last_bound_key = $key;
+
+		return $this;
 	}
+
+	protected $last_bound_key = null;
 
 
 	/**
@@ -200,7 +220,18 @@ class Container implements \ArrayAccess {
 	 * @param $key
 	 * @param $alias
 	 */
-	public function alias( $key, $alias ) {
+	public function alias( $key, $alias = null ) {
+
+		if ( func_num_args() === 1 ) {
+
+			if ( ! $this->last_bound_key ) {
+				throw new \http\Exception\RuntimeException( __METHOD__ . ' method called with one argument while no last bound key was available.' );
+			}
+
+			$alias = $key;
+			$key   = $this->last_bound_key;
+		}
+
 		$this->aliases[ $alias ] = $key;
 	}
 
