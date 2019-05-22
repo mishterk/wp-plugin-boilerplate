@@ -28,6 +28,7 @@ class Application extends Container {
 
 		self::set_instance( $this );
 
+		// todo - maybe move these to bootstrap
 		$this->register_base_bindings();
 		$this->register_directory_bindings();
 		$this->register_base_providers();
@@ -42,6 +43,22 @@ class Application extends Container {
 	public function register_provider( ServiceProviderBase $provider ) {
 		$provider->register();
 		$this->registered_providers[ get_class( $provider ) ] = $provider;
+	}
+
+
+	protected function bootstrap() {
+		$this->boot_base_providers();
+	}
+
+
+	protected function boot() {
+		$this->register_providers();
+		$this->call_method_on_providers( 'boot' );
+	}
+
+
+	protected function init() {
+		$this->call_method_on_providers( 'init' );
 	}
 
 

@@ -27,32 +27,34 @@ class Plugin extends Application {
 
 
 	/**
+	 * todo - consider moving to Application class and making the hooks configurable in Plugin/Theme classes
 	 * Initialises anything that needs handling before all providers are registered but not necessarily
 	 * on init.
 	 */
 	public function _on_plugins_loaded_first() {
-		$this->boot_base_providers();
+		$this->bootstrap();
 	}
 
 
 	/**
+	 * todo - consider moving to Application class and making the hooks configurable in Plugin/Theme classes
 	 * Invoked on WordPress' 'plugins_loaded' hook. This is where we register our providers and provide them
 	 * the opportunity to run their own actions on the same hook without having to hook themselves.
 	 *
 	 * @throws \Exception
 	 */
 	public function _on_plugins_loaded() {
-		$this->register_providers();
-		$this->call_method_on_providers( 'boot' );
+		$this->boot();
 	}
 
 
 	/**
+	 * todo - consider moving to Application class and making the hooks configurable in Plugin/Theme classes
 	 * Invoked on WordPress' 'init' hook. This is where we allow our service providers the opportunity to run their
 	 * own actions on the same hook without having to hook themselves.
 	 */
 	public function _on_init() {
-		$this->call_method_on_providers( 'init' );
+		parent::init();
 	}
 
 
