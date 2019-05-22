@@ -281,3 +281,7 @@ class MyCustomErrorNotice extends \PdkPluginBoilerplate\Framework\AdminNotices\A
 $class = new MyCustomErrorNotice();
 $class->init();
 ```
+
+## AJAX Handlers
+
+TODO: Document
