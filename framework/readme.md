@@ -1,3 +1,13 @@
+## Container
+
+The main plugin class is an IoC container that attempts to automatically resolve dependencies where possible using PHP's 
+reflection API. There system comprises of the following classes:
+
+1. `Container`
+1. `Application` (extends `Container`)
+1. `Plugin` (extends `Application`)
+1. `Theme` (extends `Application`) ** COMING SOON **
+
 ## View System
 
 The ViewRenderer can be used on its own:
