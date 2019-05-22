@@ -81,43 +81,6 @@ class Container implements \ArrayAccess {
 
 
 	/**
-	 * @param string $key
-	 * @param mixed $concrete
-	 * @param bool $shared
-	 */
-	public function bind( $key, $concrete = null, $shared = true ) {
-		if ( $this->is_protected( $key ) and $this->is_bound( $key ) ) {
-			throw new RuntimeException( "Key '$key' is a protected container binding and cannot be overridden." );
-		}
-
-		if ( $concrete === null ) {
-			$concrete = $key;
-
-		} elseif ( $this->is_abstract_key_and_concrete_class( $key, $concrete ) ) {
-			$this->alias( $key, $concrete );
-		}
-
-		if ( $shared ) {
-			$this->singletons[ $key ] = true;
-		}
-
-		$this->bindings[ $key ] = $this->enclose( $concrete );
-	}
-
-
-	/**
-	 * Binds an instance directly into the container. This instance will not be subject to resolution.
-	 *
-	 * @param $key
-	 * @param $instance
-	 */
-	public function instance( $key, $instance ) {
-		$this->resolved[ $key ] = true;
-		$this->cache_instance( $key, $instance );
-	}
-
-
-	/**
 	 * @param $key
 	 *
 	 * @return mixed
@@ -135,6 +98,18 @@ class Container implements \ArrayAccess {
 		return ( $this->is_factory( $key ) and is_callable( $resolved ) )
 			? $resolved()
 			: $resolved;
+	}
+
+
+	/**
+	 * Binds an instance directly into the container. This instance will not be subject to resolution.
+	 *
+	 * @param $key
+	 * @param $instance
+	 */
+	public function instance( $key, $instance ) {
+		$this->resolved[ $key ] = true;
+		$this->cache_instance( $key, $instance );
 	}
 
 
@@ -191,6 +166,31 @@ class Container implements \ArrayAccess {
 		};
 
 		$this->bind( $key, $extended );
+	}
+
+
+	/**
+	 * @param string $key
+	 * @param mixed $concrete
+	 * @param bool $shared
+	 */
+	public function bind( $key, $concrete = null, $shared = true ) {
+		if ( $this->is_protected( $key ) and $this->is_bound( $key ) ) {
+			throw new RuntimeException( "Key '$key' is a protected container binding and cannot be overridden." );
+		}
+
+		if ( $concrete === null ) {
+			$concrete = $key;
+
+		} elseif ( $this->is_abstract_key_and_concrete_class( $key, $concrete ) ) {
+			$this->alias( $key, $concrete );
+		}
+
+		if ( $shared ) {
+			$this->singletons[ $key ] = true;
+		}
+
+		$this->bindings[ $key ] = $this->enclose( $concrete );
 	}
 
 
