@@ -208,6 +208,17 @@ class ContainerTests extends WP_UnitTestCase {
 	}
 
 
+	public function test_factory_method_returns_unique_instances_when_a_classname_is_bound_to_a_key() {
+		$container = new Container();
+		$container->factory( 'test.factory', RootClassSimple::class );
+
+		$this->assertNotSame(
+			$container->make( 'test.factory' ),
+			$container->make( 'test.factory' )
+		);
+	}
+
+
 	public function test_factory_method_can_be_aliased() {
 		$container = new Container();
 		$container->factory( 'test.factory', function () {
