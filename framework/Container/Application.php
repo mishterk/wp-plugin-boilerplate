@@ -21,6 +21,33 @@ class Application extends Container {
 	protected $registered_providers = [];
 
 
+	/**
+	 * Define which hook to run the bootstrap process on.
+	 *
+	 * @var string|bool Hook name or FALSE to prevent hooked bootstrap.
+	 */
+	protected $bootstrap_hook = false;
+
+
+	/**
+	 * Define which hook to run the boot process on.
+	 *
+	 * @var string|bool Hook name or FALSE to prevent hooked bootstrap.
+	 */
+	protected $boot_hook = false;
+
+
+	/**
+	 * Define which hook to run the init process on.
+	 *
+	 * @var string|bool Hook name or FALSE to prevent hooked bootstrap.
+	 */
+	protected $init_hook = false;
+
+
+	/**
+	 * @param string|null $base_path
+	 */
 	public function __construct( $base_path = null ) {
 		if ( $base_path ) {
 			$this->bind( 'path.base', rtrim( $base_path, '\/' ) );
@@ -28,10 +55,17 @@ class Application extends Container {
 
 		self::set_instance( $this );
 
-		// todo - maybe move these to bootstrap
-		$this->register_base_bindings();
-		$this->register_directory_bindings();
-		$this->register_base_providers();
+		if ( $this->bootstrap_hook ) {
+			add_action( $this->bootstrap_hook, [ $this, '_bootstrap' ], 1 );
+		}
+
+		if ( $this->boot_hook ) {
+			add_action( $this->boot_hook, [ $this, '_boot' ] );
+		}
+
+		if ( $this->init_hook ) {
+			add_action( $this->init_hook, [ $this, '_init' ] );
+		}
 	}
 
 
@@ -46,18 +80,21 @@ class Application extends Container {
 	}
 
 
-	protected function bootstrap() {
+	public function _bootstrap() {
+		$this->register_base_bindings();
+		$this->register_directory_bindings();
+		$this->register_base_providers();
 		$this->boot_base_providers();
+		$this->register_providers();
 	}
 
 
-	protected function boot() {
-		$this->register_providers();
+	public function _boot() {
 		$this->call_method_on_providers( 'boot' );
 	}
 
 
-	protected function init() {
+	public function _init() {
 		$this->call_method_on_providers( 'init' );
 	}
 
