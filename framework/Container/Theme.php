@@ -27,6 +27,12 @@ class Theme extends Application {
 	public function __construct( $theme_dir, $theme_url ) {
 		$this->bind( 'url.base', $theme_url );
 
+		// todo - consider these
+		//  get_template_directory();
+		//  get_template_directory_uri();
+		//  get_stylesheet_directory();
+		//  get_stylesheet_directory_uri();
+
 		parent::__construct( $theme_dir );
 	}
 
