@@ -11,6 +11,12 @@ class ConfigServiceProvider extends ServiceProviderBase {
 
 
 	/**
+	 * @var Config
+	 */
+	private $config;
+
+
+	/**
 	 * Register this service provider.
 	 *
 	 * @return void
@@ -27,26 +33,46 @@ class ConfigServiceProvider extends ServiceProviderBase {
 	 * @throws \Exception
 	 */
 	public function load_configuration_files() {
-		/** @var Config $config */
-		$config     = $this->app->make( 'config' );
-		$config_dir = $this->app->make( 'path.config' );
+		$this->config = $this->app->make( 'config' );
+		$config_dir   = $this->app->make( 'path.config' );
 
-		$resource = @opendir( $config_dir );
+		if ( is_dir( $config_dir ) ) {
+			$this->load_files_in_dir( $config_dir );
+		}
+	}
+
+
+	private function load_files_in_dir( $dir, $context = '' ) {
+		$resource = @opendir( $dir );
 
 		if ( $resource === false ) {
 			return;
 		}
 
 		while ( ( $file = readdir( $resource ) ) !== false ) {
-			$file_path = "$config_dir/$file";
 
-			if ( is_dir( $file_path ) ) {
+			if ( in_array( $file, [ '.', '..' ] ) ) {
 				continue;
 			}
 
-			$key = pathinfo( $file_path, PATHINFO_FILENAME );
+			$file_path = "$dir/$file";
+			$key       = pathinfo( $file_path, PATHINFO_FILENAME );
+			$ext       = pathinfo( $file_path, PATHINFO_EXTENSION );
 
-			$config->set( $key, include $file_path );
+			if ( ! ( is_dir( $file_path ) or $ext === 'php' ) ) {
+				continue;
+			}
+
+			if ( $context ) {
+				$key = "$context.$key";
+			}
+
+			if ( is_dir( $file_path ) ) {
+				$this->load_files_in_dir( $file_path, $key );
+				continue;
+			}
+
+			$this->config->set( $key, include $file_path );
 		}
 
 		closedir( $resource );
