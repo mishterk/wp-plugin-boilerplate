@@ -4,7 +4,6 @@
 namespace PdkPluginBoilerplate\Framework\Providers;
 
 
-use PdkPluginBoilerplate\Framework\Container\Application;
 use PdkPluginBoilerplate\Framework\Utils\Config;
 
 
