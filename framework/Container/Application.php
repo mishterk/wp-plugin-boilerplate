@@ -30,17 +30,19 @@ class Application extends Container {
 
 
 	/**
-	 * Define which hook to run the boot process on.
+	 * Define which hook to run the boot process on. If $this->$bootstrap_hook is FALSE, this
+	 * won't be used.
 	 *
-	 * @var string|bool Hook name or FALSE to prevent hooked bootstrap.
+	 * @var string|bool Hook name or FALSE to prevent hooked boot.
 	 */
 	protected $boot_hook = false;
 
 
 	/**
-	 * Define which hook to run the init process on.
+	 * Define which hook to run the init process on. If $this->$bootstrap_hook is FALSE, this
+	 * won't be used.
 	 *
-	 * @var string|bool Hook name or FALSE to prevent hooked bootstrap.
+	 * @var string|bool Hook name or FALSE to prevent hooked init.
 	 */
 	protected $init_hook = false;
 
@@ -57,14 +59,14 @@ class Application extends Container {
 
 		if ( $this->bootstrap_hook ) {
 			add_action( $this->bootstrap_hook, [ $this, '_bootstrap' ], 1 );
-		}
 
-		if ( $this->boot_hook ) {
-			add_action( $this->boot_hook, [ $this, '_boot' ] );
-		}
+			if ( $this->boot_hook ) {
+				add_action( $this->boot_hook, [ $this, '_boot' ] );
+			}
 
-		if ( $this->init_hook ) {
-			add_action( $this->init_hook, [ $this, '_init' ] );
+			if ( $this->init_hook ) {
+				add_action( $this->init_hook, [ $this, '_init' ] );
+			}
 		}
 	}
 
