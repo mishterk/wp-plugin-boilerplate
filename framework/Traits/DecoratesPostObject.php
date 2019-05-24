@@ -53,8 +53,6 @@ trait DecoratesPostObject {
 
 
 	public function __set( $name, $value ) {
-		// todo - add support for internal properties
-
 		if ( ! property_exists( $this->post, $name ) ) {
 			$trace = debug_backtrace();
 			trigger_error(
@@ -69,8 +67,6 @@ trait DecoratesPostObject {
 
 
 	public function __get( $name ) {
-		// todo - add support for internal properties
-
 		if ( property_exists( $this->post, $name ) ) {
 			return $this->post->$name;
 		}
