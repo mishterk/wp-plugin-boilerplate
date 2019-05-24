@@ -95,13 +95,13 @@ abstract class PostTypeBase {
 
 	protected function apply_get_mutator( $name, $value ) {
 		return $this->has_get_mutator( $name )
-			? $this->{"get_{$name}"}( $value )
+			? $this->{"get_{$name}_attribute"}( $value )
 			: $value;
 	}
 
 
 	protected function has_get_mutator( $name ) {
-		return method_exists( $this, "get_{$name}" );
+		return method_exists( $this, "get_{$name}_attribute" );
 	}
 
 
