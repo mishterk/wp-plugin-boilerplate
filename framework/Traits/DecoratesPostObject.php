@@ -42,6 +42,9 @@ namespace PdkPluginBoilerplate\Framework\Traits;
  * @property string post_type
  * @property string post_mime_type
  * @property string comment_count
+ *
+ * @method array to_array()
+ * @method array|bool|object|\WP_Post filter( $filter )
  */
 trait DecoratesPostObject {
 
@@ -93,8 +96,9 @@ trait DecoratesPostObject {
 
 
 	public function __call( $name, $arguments ) {
-		// TODO: Implement __call() method.
-		// todo - call WP_Post method unless defined in current class
+		return method_exists( $this->post, $name )
+			? call_user_func_array( [ $this->post, $name ], $arguments )
+			: null;
 	}
 
 

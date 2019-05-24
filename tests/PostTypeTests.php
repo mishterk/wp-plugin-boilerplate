@@ -160,4 +160,15 @@ class PostTypeTests extends \WP_UnitTestCase {
 	}
 
 
+	public function test_call_magic_method_works() {
+		$mock = $this->factory->post->create_and_get( [ 'post_title' => 'something' ] );
+		$post = PostType::make( $mock );
+
+		$array = $post->to_array();
+
+		$this->assertArrayHasKey( 'post_title', $array );
+		$this->assertSame( 'something', $array['post_title'] );
+	}
+
+
 }
