@@ -56,6 +56,11 @@ trait DecoratesAndMutatesPostObject {
 	}
 
 
+	protected function set_post_object( \WP_Post $post ) {
+		$this->post = $post;
+	}
+
+
 	protected function apply_get_mutator( $name, $value ) {
 		return $this->has_get_mutator( $name )
 			? $this->{"get_{$name}_attribute"}( $value )

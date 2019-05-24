@@ -47,8 +47,8 @@ abstract class PostTypeBase {
 			return null;
 		}
 
-		$instance       = new static;
-		$instance->post = $post;
+		$instance = new static;
+		$instance->set_post_object( $post );
 
 		return $instance;
 	}
