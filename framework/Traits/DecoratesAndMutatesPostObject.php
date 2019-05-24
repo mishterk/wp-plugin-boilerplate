@@ -42,7 +42,6 @@ trait DecoratesAndMutatesPostObject {
 
 
 	public function __set( $name, $value ) {
-
 		if ( $this->has_set_mutator( $name ) ) {
 			$this->apply_set_mutator( $name, $value );
 
@@ -64,7 +63,6 @@ trait DecoratesAndMutatesPostObject {
 
 
 	public function __get( $name ) {
-
 		if ( $this->has_get_mutator( $name ) ) {
 			return $this->apply_get_mutator( $name, $this->post->$name );
 
@@ -81,6 +79,22 @@ trait DecoratesAndMutatesPostObject {
 			E_USER_NOTICE );
 
 		return null;
+	}
+
+
+	public function __isset( $name ) {
+		// TODO: Implement __isset() method.
+	}
+
+
+	public function __unset( $name ) {
+		// TODO: Implement __unset() method.
+	}
+
+
+	public function __call( $name, $arguments ) {
+		// TODO: Implement __call() method.
+		// todo - call WP_Post method unless defined in current class
 	}
 
 
