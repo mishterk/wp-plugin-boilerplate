@@ -13,6 +13,12 @@ class PostType extends PostTypeBase {
 	protected $post_type = 'post';
 
 
+	// for testing accessibility
+	public $some_public_prop = 'public';
+//	public $some_protected_prop = 'protected';
+//	public $some_private_prop = 'private';
+
+
 	public function get_post_title_attribute( $value ) {
 		$value .= '-appended';
 

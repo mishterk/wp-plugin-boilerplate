@@ -120,4 +120,18 @@ class PostTypeTests extends \WP_UnitTestCase {
 	}
 
 
+	public function test_accessible_props_are_set_and_retrieved_from_the_decorator() {
+		$mock = $this->factory->post->create_and_get();
+		$post = PostType::make( $mock );
+
+		$this->assertEquals( 'public', $post->some_public_prop );
+
+		$post->some_public_prop = 'overridden';
+
+		$this->assertEquals( 'overridden', $post->some_public_prop );
+		$this->assertFalse( property_exists( $mock, 'some_public_prop' ),
+			'The accessible property should not exist on the WP_Post object' );
+	}
+
+
 }
