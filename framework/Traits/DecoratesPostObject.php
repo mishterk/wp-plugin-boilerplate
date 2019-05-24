@@ -102,8 +102,13 @@ trait DecoratesPostObject {
 	}
 
 
-	protected function set_post_object( \WP_Post $post ) {
+	public function set_post_object( \WP_Post $post ) {
 		$this->post = $post;
+	}
+
+
+	public function get_post_object() {
+		return $this->post ?? null;
 	}
 
 
