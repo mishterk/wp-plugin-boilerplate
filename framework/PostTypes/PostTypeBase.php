@@ -51,8 +51,8 @@ abstract class PostTypeBase {
 
 
 	public function __get( $name ) {
-		if ( property_exists( $this->post, $name ) or $this->has_accessor( $name ) ) {
-			return $this->apply_accessor( $name, $this->post->$name );
+		if ( property_exists( $this->post, $name ) or $this->has_get_mutator( $name ) ) {
+			return $this->apply_get_mutator( $name, $this->post->$name );
 		}
 
 		$trace = debug_backtrace();
@@ -93,19 +93,15 @@ abstract class PostTypeBase {
 	}
 
 
-	protected function apply_accessor( $name, $value ) {
-		$method_name = "get_{$name}_attribute";
-
-		if ( $this->has_accessor( $name ) ) {
-			$value = $this->$method_name( $value );
-		}
-
-		return $value;
+	protected function apply_get_mutator( $name, $value ) {
+		return $this->has_get_mutator( $name )
+			? $this->{"get_{$name}"}( $value )
+			: $value;
 	}
 
 
-	protected function has_accessor( $name ) {
-		return method_exists( $this, "get_{$name}_attribute" );
+	protected function has_get_mutator( $name ) {
+		return method_exists( $this, "get_{$name}" );
 	}
 
 

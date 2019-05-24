@@ -13,14 +13,14 @@ class PostType extends PostTypeBase {
 	protected $post_type = 'post';
 
 
-	public function get_post_title_attribute( $value ) {
+	public function get_post_title( $value ) {
 		$value .= '-appended';
 
 		return $value;
 	}
 
 
-	public function get_some_random_prop_attribute( $value ) {
+	public function get_some_random_prop( $value ) {
 		return 'custom value';
 	}
 
