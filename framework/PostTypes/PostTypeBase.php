@@ -6,6 +6,7 @@ namespace PdkPluginBoilerplate\Framework\PostTypes;
 
 use PdkPluginBoilerplate\Framework\Container\Application;
 use PdkPluginBoilerplate\Framework\Traits\DecoratesAndMutatesPostObject;
+use WP_Post;
 
 
 /**
@@ -19,10 +20,15 @@ abstract class PostTypeBase {
 
 
 	public static function find( $post_id ) {
-		if ( is_null( $post = get_post( $post_id ) ) ) {
-			return null;
-		}
+		$post = get_post( $post_id );
 
+		return ( $post instanceof WP_Post )
+			? self::make( $post )
+			: null;
+	}
+
+
+	public static function make( \WP_Post $post ) {
 		$instance = new static;
 		$instance->set_post_object( $post );
 
