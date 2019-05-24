@@ -83,12 +83,12 @@ trait DecoratesPostObject {
 
 
 	public function __isset( $name ) {
-		return isset( $this->post->$name ); // todo - test
+		return isset( $this->post->$name );
 	}
 
 
 	public function __unset( $name ) {
-		unset( $this->post->$name ); // todo - test
+		unset( $this->post->$name );
 	}
 
 

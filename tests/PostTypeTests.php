@@ -134,4 +134,30 @@ class PostTypeTests extends \WP_UnitTestCase {
 	}
 
 
+	public function test_isset_works() {
+		$mock = $this->factory->post->create_and_get( [ 'post_title' => 'something' ] );
+		$post = PostType::make( $mock );
+
+		$this->assertFalse( isset( $post->not_set_prop ) );
+		$this->assertTrue( isset( $post->post_title ) );
+	}
+
+
+	public function test_unset_works() {
+		$mock = $this->factory->post->create_and_get( [ 'post_title' => 'something' ] );
+		$post = PostType::make( $mock );
+
+		$this->assertTrue( isset( $post->post_title ) );
+		$this->assertTrue( isset( $post->some_public_prop ) );
+
+		unset(
+			$post->post_title,
+			$post->some_public_prop
+		);
+
+		$this->assertFalse( isset( $post->post_title ) );
+		$this->assertFalse( isset( $post->some_public_prop ) );
+	}
+
+
 }

@@ -12,6 +12,7 @@ class PostType extends PostTypeBase {
 
 	protected $post_type = 'post';
 
+	public $not_set_prop;
 
 	// for testing accessibility
 	public $some_public_prop = 'public';
