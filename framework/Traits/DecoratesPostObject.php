@@ -55,6 +55,16 @@ trait DecoratesPostObject {
 	protected $post;
 
 
+	public function set_post_object( \WP_Post $post ) {
+		$this->post = $post;
+	}
+
+
+	public function get_post_object() {
+		return $this->post ?? null;
+	}
+
+
 	public function __set( $name, $value ) {
 		if ( ! property_exists( $this->post, $name ) ) {
 			$trace = debug_backtrace();
@@ -99,16 +109,6 @@ trait DecoratesPostObject {
 		return method_exists( $this->post, $name )
 			? call_user_func_array( [ $this->post, $name ], $arguments )
 			: null;
-	}
-
-
-	public function set_post_object( \WP_Post $post ) {
-		$this->post = $post;
-	}
-
-
-	public function get_post_object() {
-		return $this->post ?? null;
 	}
 
 
