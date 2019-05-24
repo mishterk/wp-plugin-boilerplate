@@ -25,4 +25,21 @@ class PostType extends PostTypeBase {
 	}
 
 
+	public function set_post_excerpt_attribute( $value ) {
+		$this->post->post_excerpt = $value . '-appended';
+	}
+
+
+	public function set_overloaded_attribute( $value ) {
+		$this->post->overloaded = $value . '-appended';
+	}
+
+
+	// We need this getter on an overloaded property to avoid errors where an object returned from the DB doesn't
+	// have the property set.
+	public function get_overloaded_attribute( $value ) {
+		return $value;
+	}
+
+
 }

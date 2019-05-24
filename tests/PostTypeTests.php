@@ -50,10 +50,7 @@ class PostTypeTests extends \WP_UnitTestCase {
 
 		$post->post_title   = 'title changed';
 		$post->post_content = 'content changed';
-
 		$post->save();
-
-		wp_cache_flush();
 
 		$post2 = Post::find( $mock->ID );
 
@@ -62,7 +59,7 @@ class PostTypeTests extends \WP_UnitTestCase {
 	}
 
 
-	public function test_accessor_can_mutate_existing_post_properties() {
+	public function test_get_mutator_can_mutate_existing_post_properties() {
 		$mock = $this->factory->post->create_and_get( [
 			'post_title'   => 'title',
 			'post_content' => 'content',
@@ -74,7 +71,7 @@ class PostTypeTests extends \WP_UnitTestCase {
 	}
 
 
-	public function test_accessor_can_mutate_non_existent_post_properties() {
+	public function test_get_mutator_can_mutate_non_existent_post_properties() {
 		$mock = $this->factory->post->create_and_get( [
 			'post_title'   => 'title',
 			'post_content' => 'content',
@@ -83,6 +80,43 @@ class PostTypeTests extends \WP_UnitTestCase {
 		$post = PostType::find( $mock->ID );
 
 		$this->assertSame( 'title-appended', $post->post_title );
+	}
+
+
+	public function test_set_mutator_can_mutate_existing_post_properties() {
+		$mock = $this->factory->post->create_and_get();
+		$post = PostType::find( $mock->ID );
+
+		$post->post_excerpt = 'excerpt';
+		$post->save();
+		$post = PostType::find( $mock->ID );
+
+		$this->assertSame( 'excerpt-appended', $post->post_excerpt );
+	}
+
+
+	public function test_set_mutator_can_mutate_non_existing_post_properties() {
+		$mock = $this->factory->post->create_and_get();
+		$post = PostType::find( $mock->ID );
+
+		$post->overloaded = 'overloaded';
+
+		$this->assertSame( 'overloaded-appended', $post->overloaded );
+	}
+
+
+	public function test_set_mutator_returns_empty_string_where_value_has_not_been_explicity_saved_and_retrieved() {
+		$mock = $this->factory->post->create_and_get();
+		$post = PostType::find( $mock->ID );
+
+		$post->overloaded = 'overloaded';
+
+		// save the post and pull it from the DB again.
+		$post->save();
+		$post = PostType::find( $mock->ID );
+
+		// Our test mock doesn't store the data anywhere so WordPress won't have this property.
+		$this->assertSame( '', $post->overloaded );
 	}
 
 
