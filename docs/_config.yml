@@ -1,4 +1,4 @@
-remote_theme: pmarsceill/just-the-docs
+theme: jekyll-theme-cayman
 title: PDK Plugin Boilerplate
 description: A plugin boilerplate
 show_downloads: true
