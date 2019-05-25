@@ -1,4 +1,4 @@
-theme: jekyll-theme-cayman
+theme: just-the-docs
 title: PDK Plugin Boilerplate
 description: A plugin boilerplate
 show_downloads: true
