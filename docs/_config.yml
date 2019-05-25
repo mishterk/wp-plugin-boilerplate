@@ -1,4 +1,4 @@
-theme: jekyll-theme-cayman
+remote_theme: benbalter/retlab
 title: PDK Plugin Boilerplate
 description: A plugin boilerplate
 show_downloads: true
